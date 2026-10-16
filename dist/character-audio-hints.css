@@ -1,0 +1,30 @@
+/* The invitation occupies its own row below the art, without covering a face. */
+.character-audio-hint{position:relative;display:flex;align-items:center;justify-content:center;gap:.15rem;flex:none;min-height:76px;padding:.55rem .4rem .1rem;color:#263a3d;}
+.character-audio-hint .character-audio-invite{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:44px;min-width:0;max-width:100%;margin:0;padding:.45rem .65rem;border:1px solid #8a9c9f;border-radius:1rem;background:#fff9f1;color:#263a3d;font:500 .76rem/1.35 system-ui,sans-serif;text-align:left;cursor:pointer;box-shadow:0 2px 7px #263a3d12;}
+.character-audio-invite>svg{flex:none;width:20px;height:20px;}
+.character-audio-invite>span{min-width:0;text-wrap:balance;}
+.character-audio-hint[data-intro="true"] .character-audio-invite{position:relative;border-color:#315d65;box-shadow:0 0 0 2px #fff9f166,0 4px 12px #263a3d20;}
+.character-audio-hint[data-intro="true"] .character-audio-invite::before{content:"";position:absolute;top:-6px;left:28%;width:10px;height:10px;background:#fff9f1;border-left:1px solid #315d65;border-top:1px solid #315d65;transform:rotate(45deg);}
+.character-audio-hint[data-playing="true"] .character-audio-invite{background:#315d65;color:#fff9f1;border-color:#315d65;}
+.character-audio-hint .character-audio-dismiss{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;min-height:44px;margin:0;padding:0;background:transparent;color:#263a3d;border:0;border-radius:50%;font:400 1.35rem/1 system-ui,sans-serif;cursor:pointer;}
+.character-audio-hint .character-audio-dismiss[hidden]{display:none;}
+.character-audio-hint :is(.character-audio-invite,.character-audio-dismiss):focus-visible{outline:3px solid #315d65;outline-offset:3px;}
+/* Luz retains dark text on its lavender card in both appearance themes. */
+.lz-home .lz-cover-body :is(h2,p),.lz-cover .lz-cover-body :is(h1,p){color:#12364b;}
+.lz-cover .lz-transcript,.lz-cover .lz-transcript p{color:#12364b;}
+/* Calm utility entrances keep their existing blue fill during interaction. */
+#main[data-home="true"] :is(.home-extras>.card,.dl-entry){--utility-glow:187,218,231;position:relative;z-index:0;transform-origin:center;transition:transform .25s ease,box-shadow .25s ease;}
+#main[data-home="true"] .home-link[data-view="refugio"]{--utility-glow:178,214,208;}
+#main[data-home="true"] .home-link[data-view="apoyo"]{--utility-glow:214,192,232;}
+#main[data-home="true"] .dl-entry{--utility-glow:239,211,169;}
+#main[data-home="true"] :is(.home-extras>.card,.dl-entry):is(:focus-within,:active){z-index:3;transform:scale(1.025);box-shadow:0 0 0 2px rgba(var(--utility-glow),.9),0 0 22px 5px rgba(var(--utility-glow),.55),0 10px 26px #263a3d33;}
+@media(hover:hover) and (pointer:fine){
+ #main[data-home="true"] :is(.home-extras>.card,.dl-entry):hover{z-index:3;transform:scale(1.025);box-shadow:0 0 0 2px rgba(var(--utility-glow),.9),0 0 22px 5px rgba(var(--utility-glow),.55),0 10px 26px #263a3d33;}
+}
+@media(max-width:650px),(hover:none),(pointer:coarse){
+ #main[data-home="true"] :is(.home-extras>.card,.dl-entry)[data-in-view="true"]{z-index:2;transform:scale(1.015);box-shadow:0 0 0 2px rgba(var(--utility-glow),.8),0 0 18px 4px rgba(var(--utility-glow),.45),0 8px 20px #263a3d26;}
+ .character-audio-hint{padding-left:.75rem;padding-right:.75rem;}
+ .character-audio-hint .character-audio-invite{font-size:.85rem;}
+}
+html[data-reduced-motion="true"] #main[data-home="true"] :is(.home-extras>.card,.dl-entry){transition:none;transform:none!important;}
+@media(prefers-reduced-motion:reduce){#main[data-home="true"] :is(.home-extras>.card,.dl-entry){transition:none;transform:none!important;}}

@@ -1,0 +1,27 @@
+/* This stylesheet follows the generic reduced-motion rules. Only an explicit
+   local choice enables these orbs when the device requests reduced motion. */
+.orb-motion-notice{display:none;max-width:48ch;margin:1rem auto;padding:.85rem 1rem;border:1px solid #b7cdd3;border-radius:1rem;color:#fff9ef;background:#213a4d;line-height:1.5;text-align:center;}
+.orb-motion-notice p{font-size:.9rem;margin:0 0 .7rem;color:inherit;}
+.orb-motion-notice .orb-motion-enable{min-height:48px;background:#c6dad1;color:#263a3d;border:1px solid #c6dad1;font-size:.95rem;padding:.65rem 1rem;}
+.orb-motion-notice .orb-motion-enable:focus-visible{outline:3px solid #fff4d9;outline-offset:3px;}
+html[data-orb-motion="disabled"] .orb-motion-notice{display:block;}
+.lz-voice:is([data-state="review"],[data-state="saved"],[data-state="deleted"],[data-state="preparing"],[data-state="conversion-error"]) .orb-motion-notice{display:none;}
+html[data-orb-motion="disabled"] :is(.breathing .orb,.lz-voice-orb,.lz-mini-orb){animation:none!important;transform:none!important;transition:none!important;}
+/* Breathing is an autonomous visual loop: no microphone or voice input. */
+html[data-orb-motion="enabled"] .breathing .orb{animation:diez-orb-012 5s ease-in-out infinite!important;animation-play-state:running!important;}
+html[data-orb-motion="enabled"] .breathing .orb[data-state="paused"]{animation-play-state:paused!important;}
+/* Recording movement reflects the existing local microphone level. */
+html[data-orb-motion="enabled"] .lz-voice .lz-voice-orb{margin:3.75rem auto;transform:scale(calc(1 + var(--voice-level,0)*.65))!important;transition:transform .06s ease-out,box-shadow .08s ease-out,filter .08s ease-out!important;animation:lz-orb-rest 7s ease-in-out infinite!important;}
+html[data-orb-motion="enabled"] .lz-voice[data-state="recording"] .lz-voice-orb{animation:none!important;filter:brightness(calc(1 + var(--voice-level,0)*.35)) saturate(calc(1 + var(--voice-level,0)*.25));box-shadow:inset -12px -15px 25px #39406b88,inset 8px 7px 17px #fff4ee70,0 0 calc(24px + var(--voice-level,0)*50px) #e0cbffb0,0 0 calc(45px + var(--voice-level,0)*70px) #c7e7f077;}
+html[data-orb-motion="enabled"] .lz-voice[data-state="recording"] .lz-voice-orb::before{transform:rotate(calc(-14deg + var(--voice-level,0)*38deg)) scaleX(calc(1 + var(--voice-level,0)*.18));border-width:calc(1px + var(--voice-level,0)*1px);box-shadow:0 0 calc(8px + var(--voice-level,0)*14px) #ffe6cecc;transition:transform .08s ease-out;}
+html[data-orb-motion="enabled"] .lz-voice[data-state="recording"] .lz-voice-orb::after{transform:rotate(calc(10deg - var(--voice-level,0)*48deg)) scaleY(calc(1 + var(--voice-level,0)*.55));border-width:calc(1px + var(--voice-level,0)*1px);box-shadow:0 0 calc(8px + var(--voice-level,0)*14px) #d4eaffbb;transition:transform .08s ease-out;}
+/* The entry orb has a gentle idle movement; it never uses the microphone. */
+html[data-orb-motion="enabled"] .lz-voice-entry .lz-mini-orb{animation:lz-entry-orb 6s ease-in-out infinite;transform-origin:center;}
+@keyframes lz-entry-orb{0%,100%{transform:scale(.94) translateY(2px);}50%{transform:scale(1.035) translateY(-3px);}}
+@media(max-width:650px){
+ .lz-voice-entry{aspect-ratio:auto;min-height:390px;min-height:max(390px,100vw);height:auto;padding:2rem 1.2rem;gap:1.1rem;}
+ .lz-voice-entry .lz-mini-orb{width:clamp(120px,33vw,170px);max-width:60%;margin:.7rem auto .9rem;flex-shrink:0;}
+ .lz-voice-entry>div{flex:none;max-width:29ch;}
+ .lz-voice-entry>span:last-child{margin-top:.25rem;margin-bottom:.2rem;}
+ .orb-motion-notice{padding:.8rem;}
+}

@@ -1,0 +1,27 @@
+const MEDIA={
+  "nova/NOVA_FONDO_01_JARDIN.png": "./media/nova/NOVA_FONDO_01_JARDIN.webp",
+  "nova/NOVA_FONDO_02_PUENTE.png": "./media/nova/NOVA_FONDO_02_PUENTE.webp",
+  "nova/NOVA_FONDO_03_RINCON.png": "./media/nova/NOVA_FONDO_03_RINCON.webp",
+  "nova/NOVA_FONDO_04_ESPEJO.png": "./media/nova/NOVA_FONDO_04_ESPEJO.webp",
+  "nova/NOVA_FONDO_05_HORIZONTE.png": "./media/nova/NOVA_FONDO_05_HORIZONTE.webp",
+  "nova/NOVA_FONDO_PORTADA.png": "./media/nova/NOVA_FONDO_PORTADA.webp",
+  "nova/NOVA_PERSONAJE_01_JARDIN.png": "./media/nova/NOVA_PERSONAJE_01_JARDIN.webp",
+  "nova/NOVA_PERSONAJE_02_PUENTE.png": "./media/nova/NOVA_PERSONAJE_02_PUENTE.webp",
+  "nova/NOVA_PERSONAJE_03_RINCON.png": "./media/nova/NOVA_PERSONAJE_03_RINCON.webp",
+  "nova/NOVA_PERSONAJE_04_ESPEJO.png": "./media/nova/NOVA_PERSONAJE_04_ESPEJO.webp",
+  "nova/NOVA_PERSONAJE_05_HORIZONTE.png": "./media/nova/NOVA_PERSONAJE_05_HORIZONTE.webp",
+  "nova/NOVA_PERSONAJE_PORTADA.png": "./media/nova/NOVA_PERSONAJE_PORTADA.webp",
+  "alma/ALMA_00_FONDO_PORTADA.png": "./media/alma/ALMA_00_FONDO_PORTADA.webp",
+  "alma/ALMA_00_PERSONAJE_PORTADA.png": "./media/alma/ALMA_00_PERSONAJE_PORTADA.webp",
+  "alma/ALMA_01_FONDO_RAICES.png": "./media/alma/ALMA_01_FONDO_RAICES.webp",
+  "alma/ALMA_01_PERSONAJE_RAICES.png": "./media/alma/ALMA_01_PERSONAJE_RAICES.webp",
+  "alma/ALMA_02_FONDO_GENERACIONES.png": "./media/alma/ALMA_02_FONDO_GENERACIONES.webp",
+  "alma/ALMA_02_PERSONAJE_GENERACIONES.png": "./media/alma/ALMA_02_PERSONAJE_GENERACIONES.webp",
+  "alma/ALMA_03_FONDO_RECUERDOS.png": "./media/alma/ALMA_03_FONDO_RECUERDOS.webp",
+  "alma/ALMA_03_PERSONAJE_RECUERDOS.png": "./media/alma/ALMA_03_PERSONAJE_RECUERDOS.webp",
+  "alma/ALMA_04_FONDO_DISTANCIAS.png": "./media/alma/ALMA_04_FONDO_DISTANCIAS.webp",
+  "alma/ALMA_04_PERSONAJE_DISTANCIAS.png": "./media/alma/ALMA_04_PERSONAJE_DISTANCIAS.webp",
+  "alma/ALMA_05_FONDO_NUEVAS_RAMAS.png": "./media/alma/ALMA_05_FONDO_NUEVAS_RAMAS.webp",
+  "alma/ALMA_05_PERSONAJE_NUEVAS_RAMAS.png": "./media/alma/ALMA_05_PERSONAJE_NUEVAS_RAMAS.webp"
+};
+export const mediaAsset=(world,name)=>MEDIA[world+"/"+name]||"./"+world+"/assets/"+name;

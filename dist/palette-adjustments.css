@@ -1,0 +1,142 @@
+/* Director-authorized presentation batch. No choice carries a score or meaning. */
+:root {
+ --palette-nova:#f2e2d2;--palette-nexo:#ccdceb;--palette-alma:#f8ddba;--palette-luz:#ded0e6;--palette-sage:#c6dad1;
+ --option-1:var(--palette-nova);--option-2:var(--palette-nexo);--option-3:var(--palette-luz);--option-4:var(--palette-sage);--option-5:var(--palette-alma);--option-ink:#263a3d;
+}
+html[data-theme="refugio"] {
+ --option-1:#4b3d43;--option-2:#34465b;--option-3:#42405a;--option-4:#344a4a;--option-5:#49473f;--option-ink:#f2ede6;
+}
+/* Coloured, text-only responses share the same rhythm in every question engine.
+   Image-bearing scenario cards and navigation/audio controls are excluded. */
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button {
+ --choice-fill:var(--option-1);background:var(--choice-fill);color:var(--option-ink);border-color:#829091;
+}
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button:nth-child(5n+2){--choice-fill:var(--option-2);}
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button:nth-child(5n+3){--choice-fill:var(--option-3);}
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button:nth-child(5n+4){--choice-fill:var(--option-4);}
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button:nth-child(5n+5){--choice-fill:var(--option-5);}
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button:hover {
+ background:var(--choice-fill);color:var(--option-ink);border-color:var(--option-ink);box-shadow:inset 0 0 0 1px var(--option-ink);
+}
+:is(.choices,.nova-choices,.nx-choices,.am-choices)>button:focus-visible{outline:3px solid var(--option-ink);outline-offset:3px;}
+/* Director's revised Nexo entry circle uses the existing olive tone. */
+.nx-cover .nx-enter {background:#697144;color:#fffaf4;border:1px solid #697144;}
+.simple-cover.luz .simple-enter {background:#064963;color:#fffaf4;border:1px solid #064963;}
+/* Director: the lights entrance shares the three calm entrances' blue background. */
+.dl-entry {background:linear-gradient(150deg,#697c8e,#2b4b60)!important;color:#fff9ef!important;border-color:#78929d;}
+.dl-entry-icon {background:var(--palette-sage);color:#263a3d;border:1px solid #6e8b80;}
+/* Ten unique background/spark pairings; five spark colours repeat twice. */
+.dl-light {--light-fill:var(--palette-nova);--spark:#315d65;background:var(--light-fill);color:#263a3d;border-color:#829091;}
+.dl-light:nth-child(2){--light-fill:var(--palette-nexo);--spark:#725584;}
+.dl-light:nth-child(3){--light-fill:var(--palette-luz);--spark:#064963;}
+.dl-light:nth-child(4){--light-fill:var(--palette-sage);--spark:#9f661f;}
+.dl-light:nth-child(5){--light-fill:var(--palette-alma);--spark:#914724;}
+.dl-light:nth-child(6){--light-fill:var(--palette-nexo);--spark:#315d65;}
+.dl-light:nth-child(7){--light-fill:var(--palette-alma);--spark:#725584;}
+.dl-light:nth-child(8){--light-fill:var(--palette-nova);--spark:#064963;}
+.dl-light:nth-child(9){--light-fill:var(--palette-luz);--spark:#9f661f;}
+.dl-light:nth-child(10){--light-fill:var(--palette-sage);--spark:#914724;}
+.dl-light .dl-spark {background:var(--spark);box-shadow:none;}
+.dl-light:hover{border-color:#263a3d;box-shadow:inset 0 0 0 1px #263a3d;}
+.dl-light[aria-current="page"]{border-color:#263a3d;}
+.dl-light:focus-visible,.dl-entry:focus-visible{outline:3px solid #315d65;outline-offset:3px;}
+/* When scripts are disabled, preserve the contacts behind the same neutral label. */
+.noscript>summary{cursor:pointer;min-height:44px;display:list-item;align-content:center;}
+@media(max-width:650px){
+ .hero {text-align:center;}
+ .hero h1,.hero p {margin-left:auto;margin-right:auto;}
+ .hero .demo-tag{margin-left:auto;margin-right:auto;}
+}
+/* Four home character cards: fixed fill with an exterior interaction halo. */
+#main[data-home="true"] .grid>.door {
+ position:relative;z-index:0;background:var(--home-card-fill);outline:none;
+ border-color:var(--home-card-border);transform-origin:center;
+ transition:transform .24s ease,box-shadow .24s ease;
+}
+#main[data-home="true"] .grid>.nova {--home-card-fill:#f2e2d2;--home-card-border:#dbcbbd;--home-card-glow:223,185,153;}
+#main[data-home="true"] .grid>.nexo {--home-card-fill:#ccdceb;--home-card-border:#8aa5bb;--home-card-glow:155,193,221;}
+#main[data-home="true"] .grid>[data-door="alma"] {--home-card-fill:#f8ddba;--home-card-border:#c3aa8f;--home-card-glow:231,186,124;}
+#main[data-home="true"] .grid>.luz {--home-card-fill:#ded0e6;--home-card-border:#c8bbaa;--home-card-glow:190,161,211;}
+#main[data-home="true"] .grid>.door:is(:focus-within,:active) {
+ z-index:2;transform:translateY(-4px) scale(1.055);
+ box-shadow:0 0 0 2px rgba(var(--home-card-glow),.75),0 0 22px 7px rgba(var(--home-card-glow),.5),0 12px 28px #263a3d26;
+}
+@media(hover:hover) and (pointer:fine){
+ #main[data-home="true"] .grid>.door:hover {
+  z-index:2;transform:translateY(-4px) scale(1.055);
+  box-shadow:0 0 0 2px rgba(var(--home-card-glow),.75),0 0 22px 7px rgba(var(--home-card-glow),.5),0 12px 28px #263a3d26;
+ }
+}
+@media(max-width:650px){
+ #main[data-home="true"] .grid>.door:is(:focus-within,:active){transform:scale(1.025);}
+}
+html[data-reduced-motion="true"] #main[data-home="true"] .grid>.door {transition:none;}
+html[data-reduced-motion="true"] #main[data-home="true"] .grid>.door:is(:hover,:focus-within,:active){transform:none;}
+@media(prefers-reduced-motion:reduce){
+ #main[data-home="true"] .grid>.door{transition:none;}
+ #main[data-home="true"] .grid>.door:is(:hover,:focus-within,:active){transform:none;}
+}
+/* Three calm home entrances share the original breathing background.
+   The breathing orb is unchanged; the new two orbs are decorative local CSS/SVG. */
+.home-extras>.card {background:linear-gradient(150deg,#697c8e,#2b4b60);color:#fff9ef;border-color:#78929d;}
+.home-extras .breathing-card,.home-extras .home-link {
+ display:flex;flex-direction:row;align-items:center;gap:.7rem;padding:.85rem .8rem;min-height:112px;text-align:left;flex:1;
+}
+.home-extras .breathing-card>div:not(.mini-orb),.home-extras .home-link>div {flex:1;min-width:0;}
+.home-extras .breathing-card h2,.home-extras .home-link h2 {color:#fff9ef;font-size:1.2rem;line-height:1.2;margin:0 0 .3rem;}
+.home-extras .breathing-card p,.home-extras .home-link p {color:#fff9ef;font-size:.78rem;line-height:1.4;margin:0;}
+.home-extras .breathing-card .mini-orb,.utility-orb {width:65px;height:65px;margin:0;flex:none;}
+.home-extras .breathing-card .button,.home-extras .home-link .chevron {
+ display:inline-flex;align-items:center;justify-content:center;flex:none;margin:0;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;background:#f3c9a9;color:#263a3d;border:1px solid #f3c9a9;border-radius:50%;font-size:1.2rem;
+}
+.home-extras .breathing-card .button,.home-extras .home-link .chevron {position:relative;gap:0;font-size:0;line-height:1;}
+.home-extras .breathing-card .button:after,.home-extras .home-link .chevron:after {
+ content:'';display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;
+ background:center/24px 24px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23263a3d' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+}
+.utility-orb {position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;border:1px solid #d7eef6;border-radius:50%;overflow:hidden;}
+.refuge-orb {
+ background:radial-gradient(circle at 32% 25%,#fff2d4 0%,#cddfee 24%,#91bace 52%,#578697 76%,#355a72 100%);
+ box-shadow:0 0 15px 2px #c2eafa55,inset 0 0 10px #fff3dc88;color:#f7fff9;
+}
+.refuge-orb:before {content:'';position:absolute;inset:13%;border:1px solid #effaff88;border-radius:12px;transform:rotate(-10deg);background:linear-gradient(145deg,#f0f7dc22,#9bbac222);}
+.refuge-orb:after {content:'';position:absolute;inset:8% 17% auto 17%;height:19%;border-radius:50%;background:linear-gradient(#ffffff99,transparent);transform:rotate(-15deg);}
+.utility-orb svg {position:relative;z-index:1;width:31px;height:31px;filter:drop-shadow(0 1px 2px #243a5566);}
+.support-orb {
+ background:radial-gradient(circle at 62% 34%,#ffe4d5 0%,#d9c3e6 31%,#ae9aca 58%,#7d77a4 80%,#575c83 100%);
+ box-shadow:0 0 16px 2px #e1c5ff55,inset 0 0 11px #fff2ea88;color:#fff8f4;
+}
+.support-orb:before {content:'';position:absolute;inset:12% 5%;border:1px solid #fceaff99;border-radius:50%;transform:rotate(-35deg);box-shadow:0 0 6px #fae3ff33;}
+.support-orb:after {content:'';position:absolute;width:20px;height:13px;top:8%;left:19%;background:radial-gradient(ellipse,#fff6e8a0,transparent 75%);transform:rotate(-25deg);}
+@media(min-width:1000px){
+ .home-extras .breathing-card .mini-orb,.home-extras .utility-orb{width:58px;height:58px;}
+ .home-extras .breathing-card,.home-extras .home-link{gap:.55rem;}
+}
+@media(max-width:650px){
+ .home-extras .breathing-card,.home-extras .home-link {min-height:97px;padding:.6rem 1rem;gap:.85rem;flex:none;}
+ .home-extras .breathing-card h2,.home-extras .home-link h2 {font-size:1.25rem;}
+ .home-extras .breathing-card p,.home-extras .home-link p {font-size:.72rem;}
+}
+
+/* Reserve separate columns for the orb, readable copy and centred arrow. */
+.home-extras .breathing-card,.home-extras .home-link {
+ display:grid;grid-template-columns:65px minmax(0,1fr) 44px;
+ flex-wrap:nowrap;overflow-wrap:normal;word-break:normal;
+}
+.home-extras .breathing-card>div:not(.mini-orb),.home-extras .home-link>div {
+ min-width:0;overflow-wrap:normal;word-break:normal;
+}
+.home-extras :is(h2,p){overflow-wrap:normal;word-break:normal;}
+@media(min-width:1000px){
+ .home-extras .breathing-card,.home-extras .home-link{grid-template-columns:58px minmax(0,1fr) 44px;}
+}
+@media(min-width:601px) and (max-width:999px){
+ .home-extras {grid-template-columns:minmax(0,1fr);}
+}
+@media(max-width:360px){
+ .home-extras .breathing-card,.home-extras .home-link{grid-template-columns:52px minmax(0,1fr) 44px;padding:.6rem .65rem;gap:.6rem;}
+ .home-extras .breathing-card .mini-orb,.home-extras .utility-orb{width:52px;height:52px;}
+}
+/* Reset the whole breathing session without leaving its screen. */
+.breathing #breathing-reset {background:#ded0e6;color:#42334f;border-color:#a18aaf;}
+.breathing #breathing-reset:hover {background:#ded0e6;color:#42334f;box-shadow:inset 0 0 0 1px #42334f;}

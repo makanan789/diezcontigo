@@ -1,0 +1,16 @@
+/* GAUNTLET 012: F5 presentation only. No audio, stage engine or storage changes. */
+.breathing .orb {animation-name:diez-orb-012;animation-duration:5s;animation-timing-function:ease-in-out;}
+.breathing[data-session="active"] {padding:1rem;}
+.breathing[data-session="active"] .orb-space {height:clamp(300px,32vw,400px);}
+.breathing[data-session="active"] .orb {width:clamp(210px,26vw,310px);height:clamp(210px,26vw,310px);flex-shrink:0;}
+.breathing-context {font-size:1rem;line-height:1.5;max-width:42ch;margin:.5rem auto 1rem;}
+.breathing .actions {gap:.6rem;}
+@keyframes diez-orb-012 {0%,100%{transform:scale(.8);}50%{transform:scale(1.08);}}
+html[data-reduced-motion="true"] .breathing .orb {animation:none;transform:none;}
+@media(prefers-reduced-motion:reduce){.breathing .orb {animation:none!important;transform:none;}}
+@media(max-width:600px){
+ .breathing[data-session="active"] .orb-space {height:285px;}
+ .breathing[data-session="active"] .orb {width:min(230px,67vw);height:min(230px,67vw);}
+ .breathing-context {max-width:32ch;}
+ .breathing .actions button {font-size:.95rem;}
+}

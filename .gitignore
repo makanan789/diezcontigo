@@ -1,0 +1,16 @@
+.DS_Store
+._*
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+node_modules/
+.venv/
+__pycache__/
+.openai/
+.codex/
+private/
+tmp/
+*.log
+

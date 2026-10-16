@@ -1,0 +1,132 @@
+/* Director's twelve-point visual batch, 14/10/2026. No data or narrative rules. */
+/* Four home cards share one typographic hierarchy and consistent proportions. */
+.nova-home,.nx-home,.simple-cover.card {display:flex;flex-direction:column;overflow:hidden;}
+.nova-home .nova-cover-art,.nx-home .nx-cover-art,.simple-cover.card .simple-cover-art {height:220px;flex:none;}
+.nova-home .nova-cover-body,.nx-home .nx-cover-body,.simple-cover.card .simple-cover-body {display:flex;flex-direction:column;align-items:center;flex:1;padding:1rem .65rem;}
+.nova-home .nova-cover-body h2,.nx-home .nx-cover-body h2,.simple-cover.card .simple-cover-body h2 {font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:2rem;line-height:1.1;letter-spacing:.01em;margin:0;color:#12364b;}
+.nova-home .nova-kicker,.nx-home .nx-cover-kicker,.simple-cover.card .simple-cover-kicker {font-size:.65rem;line-height:1.5;letter-spacing:.27em;margin:.3rem 0 .5rem;color:#12364b;}
+.nova-home .nova-cover-description,.nx-home .nx-cover-body p:not(.nx-cover-kicker),.simple-cover.card .simple-cover-description {font-size:.78rem;line-height:1.5;max-width:26ch;margin:.65rem auto 1rem;color:#263a3d;}
+.nova-home .nova-enter,.nx-home .nx-enter,.simple-cover.card .simple-enter {margin-top:auto;width:48px;height:48px;}
+.nova-home .nova-ornament,.nx-home .nx-gold,.simple-cover.card .simple-ornament {height:26px;min-height:26px;margin:.4rem auto;}
+.nx-home .nx-gold {height:3px;min-height:3px;margin:1.1rem auto 1rem;}
+.nova-audio-home,.nx-audio-home {display:contents;}
+/* Colour changes requested for the two utility icons, in both existing themes. */
+.home-link[data-view="refugio"] .soft-icon {background:#ccdceb;color:#263a3d;}
+.home-link[data-view="apoyo"] .soft-icon {background:#ded0e6;color:#263a3d;}
+/* Accessible click targets are the actual transparent character layers. */
+.nx-cover-character,.nx-character.nx-interactive {display:block;border:0;padding:0;background:transparent!important;color:inherit;border-radius:1rem;cursor:pointer;transition:filter .25s,transform .25s;}
+.nx-cover-character {width:100%;}
+.nx-interactive img {transition:filter .25s,transform .25s;}
+.nx-interactive:hover img,.nx-interactive[data-playing="true"] img {filter:drop-shadow(0 0 10px #ffe6a7aa);transform:scale(1.035);}
+.nx-world[data-scene="01"] .nx-interactive:hover img,.nx-world[data-scene="02"] .nx-interactive:hover img,.nx-world[data-scene="03"] .nx-interactive:hover img,
+.nx-world[data-scene="01"] .nx-interactive[data-playing="true"] img,.nx-world[data-scene="02"] .nx-interactive[data-playing="true"] img,.nx-world[data-scene="03"] .nx-interactive[data-playing="true"] img {transform:scale(1.12);}
+.nx-interactive:focus-visible,.nova-figure:focus-visible {outline:3px solid #315d65;outline-offset:3px;}
+/* Nova's individual cover mirrors the clean dedicated cover and round controls. */
+.nova-cover-view .nova-cover {max-width:460px;}
+.nova-cover-view .nova-cover-body h1 {font:500 3.5rem/1 Georgia,"Times New Roman",serif;margin:0;letter-spacing:.02em;}
+.nova-cover-view .nova-cover-art {height:360px;}
+.nova-cover-view .nova-cover-body {padding:.8rem 1rem 1.4rem;}
+.nova-cover-view .nova-cover-description {max-width:28ch;}
+.nova-cover-controls {background:transparent;border:0;padding:0 1rem 1rem;text-align:center;}
+.nova-cover-controls .actions {justify-content:center;margin:0;}
+.nova-audio .actions {gap:.35rem;}
+.nova-audio button {width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;font-size:1rem;}
+.nova-cover-controls button {background:#315d65;color:#fffaf4;}
+.nova-cover-controls button.secondary {background:#fffaf4;color:#315d65;}
+.nova-top,.simple-top {display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 .8rem;}
+.nova-top a,.simple-top a {display:inline-flex;align-items:center;gap:.35rem;min-height:44px;padding:.45rem .65rem;border:1px solid #d4c2b0;background:#fff8ef;color:#16384e;border-radius:2rem;text-decoration:none;font-size:.88rem;font-weight:400;}
+.nova-top a:nth-child(2),.simple-top a:nth-child(2) {margin-left:auto;}
+.nova-top svg,.simple-top svg {width:21px;height:21px;}
+/* Scenario headings are text on the landscape, with no title panel. */
+.nova-world,.nx-world {position:relative;isolation:isolate;overflow:hidden;}
+.nova-world {background-position:center top;}
+.nova-world:before,.nx-world:before {content:"";position:absolute;top:0;left:0;right:0;height:310px;z-index:-1;pointer-events:none;}
+.nova-world:before {background:linear-gradient(90deg,#15374ee0 0%,#15374e77 48%,transparent 78%);}
+.nx-world:before {background:linear-gradient(90deg,#fff3e6f2 0%,#fff3e69c 48%,transparent 78%);}
+.nova-world>.nova-scene-label,.nx-world>.nx-scene-title {background:none;border:0;box-shadow:none;border-radius:0;padding:.35rem .6rem .6rem;margin:0 0 .25rem;max-width:70%;}
+.world-brand {font:500 5rem/1 Georgia,"Times New Roman",serif;letter-spacing:-.015em;}
+.world-category {font-size:.82rem;line-height:1.4;letter-spacing:.4em;margin:.35rem 0 .7rem;}
+.nova-world .world-brand,.nova-world .world-category,.nova-scene-label h1 {color:#fffaf4;text-shadow:0 1px 4px #102738bb;}
+.nova-scene-label .nova-ornament {color:#fffaf4;margin:.5rem 0 .8rem;}
+.nova-scene-label .nova-ornament path {stroke:currentColor;}
+.nova-scene-label h1 {font:500 1.9rem/1.2 Georgia,"Times New Roman",serif;letter-spacing:0;margin:0;max-width:24ch;}
+.nx-scene-title .nx-gold {margin:.55rem 0 .8rem;}
+.nx-scene-title .world-brand,.nx-scene-title .world-category,.nx-scene-title h1 {color:#10334d;}
+.nx-scene-title h1 {font-size:1.9rem;max-width:24ch;}
+/* Character and compact speech bubble form a single visual group. */
+.nova-scene-hero {grid-template-columns:55% minmax(0,1fr);gap:0;align-items:center;min-height:380px;margin:.1rem 0 1rem;}
+.nova-scene-hero .nova-figure {height:380px;width:100%;margin:0;}
+.nova-scene-hero .nova-audio {position:relative;align-self:start;justify-self:start;margin:1rem 0 0;width:min(100%,330px);padding:.85rem;background:#fffaf4;border:1px solid #d6c6b5;border-radius:1.25rem;color:#193753;}
+.nova-scene-hero .nova-audio:before {content:"";position:absolute;left:-12px;top:62%;width:20px;height:20px;background:#fffaf4;border-left:1px solid #d6c6b5;border-bottom:1px solid #d6c6b5;transform:rotate(45deg);}
+.nova-scene-caption {margin:0;}
+.nova-scene-caption summary,.nova-scene-caption .nova-cotejo {display:none;}
+.nova-scene-hero .nova-transcript {max-height:175px;overflow-y:auto;overscroll-behavior:contain;font-size:1rem;line-height:1.5;margin:0 .1rem .3rem;}
+.nova-scene-hero .nova-audio .actions {margin:.5rem 0 0;}
+.nova-stories {grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;}
+.nova-story-card {position:relative;border:2px solid #fffaf4;border-radius:1.25rem;}
+.nova-story-card img {width:calc(100% - 1rem);height:132px;margin:.5rem .5rem 0;border:0;border-radius:.8rem;}
+.nova-card-icon {position:absolute;top:116px;left:1rem;display:flex;align-items:center;justify-content:center;width:48px;height:48px;border:2px solid #fffaf4;border-radius:50%;background:#16384e;color:#fffaf4;}
+.nova-story-copy {padding:2rem 3.3rem .9rem 1rem;}
+.nova-story-copy h2 {font:600 1.2rem/1.25 system-ui,sans-serif;}
+.nova-story-copy p {font-size:.95rem;line-height:1.45;}
+.nova-story-copy span {right:.65rem;top:auto;bottom:.8rem;margin:0;width:36px;height:36px;background:none;}
+.nova-notes-card {background:#fffaf4;border:2px solid #fffaf4;border-radius:1.25rem;}
+.nova-notebook {background:#16384e;border:2px solid #fffaf4;color:#fffaf4;}
+/* Nexo's interior returns to the approved cream palette. Its covers stay celeste. */
+.nx-world .nx-top a,.nx-world .nx-speech,.nx-place,.nx-dialogue,.nx-note-form,.nx-note-list li {background:#fff8ef;border-color:#d4c2b0;color:#10334d;}
+.nx-world .nx-speech:before {background:#fff8ef;border-color:#d4c2b0;}
+.nx-world .nx-card,.nx-notes-card {background:#fff8ef;border-color:#fff8ef;color:#10334d;}
+.nx-world .nx-card>.nx-icon,.nx-notes-card .nx-icon {border-color:#fff8ef;}
+.nx-world .nx-arrow,.nx-notes-card .nx-arrow {background:#f1dfcb;}
+.nx-world .nx-audio button:not(:first-child),.nx-dialogue .nx-secondary {background:#fff8ef;}
+.nx-world .nx-hero {min-height:380px;}
+.nx-world .nx-character {height:380px;}
+/* Provisional Alma and Luz reuse the existing Director-approved image atlas. */
+main[data-simple-world] {max-width:1040px;}
+.simple-cover {--cover-tint:#eed3ae;--sprite:66.666667%;max-width:460px;margin:auto;padding:0!important;border:1px solid #c8bbaa;border-radius:1.4rem;overflow:hidden;background:var(--cover-tint);color:#263a3d;}
+.simple-cover.luz {--cover-tint:#ded0e6;--sprite:100%;}
+.simple-cover-art {position:relative;height:360px;}
+.simple-cover .portrait {height:100%;width:100%;min-height:0;background-color:var(--cover-tint);background-size:400% auto;background-position:var(--sprite) 35%;}
+.simple-cover .portrait:after {background:linear-gradient(transparent 65%,var(--cover-tint));}
+.simple-cover-body {padding:.8rem 1rem 1.4rem;text-align:center;}
+.simple-cover-body h1 {font:500 3.5rem/1 Georgia,"Times New Roman",serif;letter-spacing:.02em;margin:0;}
+.simple-cover-kicker {font-size:.8rem;letter-spacing:.35em;margin:.3rem 0 .6rem;}
+.simple-ornament {display:flex;justify-content:center;height:26px;color:#315d65;margin:.6rem auto;}
+.simple-cover-description {font-size:1.05rem;line-height:1.55;max-width:28ch;margin:.7rem auto 1rem;}
+.simple-enter {display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:#315d65;color:#fffaf4;text-decoration:none;font-size:1.8rem;}
+.simple-cover.card {max-width:none;margin:0;}
+@media(max-width:650px){
+ .nova-home .nova-cover-art,.nx-home .nx-cover-art,.simple-cover.card .simple-cover-art {height:250px;}
+ .nova-home .nova-cover-body h2,.nx-home .nx-cover-body h2,.simple-cover.card .simple-cover-body h2 {font-size:2rem;}
+ .nova-home .nova-cover-description,.nx-home .nx-cover-body p:not(.nx-cover-kicker),.simple-cover.card .simple-cover-description {font-size:.95rem;}
+ .nova-home .nova-kicker,.nx-home .nx-cover-kicker,.simple-cover.card .simple-cover-kicker {font-size:.75rem;}
+ .nova-cover-view .nova-cover-art,.simple-cover-art {height:310px;}
+ .nova-top a,.simple-top a {font-size:.8rem;padding:.4rem .5rem;}
+ .world-brand {font-size:3rem;}
+ .world-category {font-size:.65rem;letter-spacing:.32em;}
+ .nova-world>.nova-scene-label,.nx-world>.nx-scene-title {max-width:90%;padding:.25rem .25rem .6rem;}
+ .nova-scene-label h1,.nx-scene-title h1 {font-size:1.4rem;}
+ .nova-world:before,.nx-world:before {height:265px;}
+ .nova-scene-hero {grid-template-columns:54% minmax(0,1fr);min-height:260px;align-items:center;margin:.1rem 0 .8rem;}
+ .nova-scene-hero .nova-figure {height:270px;width:100%;}
+ .nova-scene-hero .nova-audio {width:100%;align-self:center;margin:.25rem 0 0;padding:.5rem;border-radius:.9rem;}
+ .nova-scene-hero .nova-transcript {max-height:175px;font-size:.92rem;}
+ .nova-scene-hero .nova-audio:before {left:-9px;width:14px;height:14px;}
+ .nova-audio button {width:38px;height:44px;}
+ .nova-stories {gap:.55rem;}
+ .nova-story-card img {height:91px;}
+ .nova-card-icon {top:76px;left:.65rem;width:40px;height:40px;}
+ .nova-story-copy {padding:1.75rem .6rem .65rem;}
+ .nova-story-copy h2 {font-size:1.02rem;}
+ .nova-story-copy p {font-size:.85rem;}
+ .nova-story-copy span {position:static;display:flex;margin:.4rem 0 0 auto;width:28px;height:28px;}
+ .nx-world .nx-hero {min-height:270px;}
+ .nx-world .nx-character {height:270px;}
+ .simple-cover.card .portrait {height:100%;}
+}
+@media(prefers-reduced-motion:reduce){.nx-interactive,.nx-interactive img,.nova-figure,.nova-figure img {transition:none!important;} .nx-interactive:hover img,.nx-interactive[data-playing="true"] img {transform:none!important;}}
+html[data-reduced-motion="true"] .nx-interactive,html[data-reduced-motion="true"] .nx-interactive img {transition:none!important;}
+html[data-reduced-motion="true"] .nx-interactive:hover img,html[data-reduced-motion="true"] .nx-interactive[data-playing="true"] img {transform:none!important;}
+/* Continuous atmospheric contrast, never a rectangular title backplate. */
+.nova-world:before,.nx-world:before {-webkit-mask-image:linear-gradient(#000 0%,#000 42%,transparent 100%);mask-image:linear-gradient(#000 0%,#000 42%,transparent 100%);}
+.nx-scene-title h1,.nx-scene-title .world-brand,.nx-scene-title .world-category {text-shadow:0 1px 2px #fff5e1aa;}

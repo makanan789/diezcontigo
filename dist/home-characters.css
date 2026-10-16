@@ -1,0 +1,39 @@
+/* Independent foreground response; the card keeps its existing zoom and fill. */
+#main[data-home="true"] :is(.nova-home,.nx-home,.am-home){--character-rim:255,229,174;--character-zoom:1.13;}
+#main[data-home="true"] .nova-home{--character-rim:211,243,250;}
+#main[data-home="true"] .am-home{--character-rim:255,219,153;--character-zoom:1.09;}
+#main[data-home="true"] :is(.nova-cover-art,.nx-cover-art,.am-cover-art){isolation:isolate;}
+#main[data-home="true"] :is(.nova-cover-art,.nx-cover-art,.am-cover-art)::after{z-index:3;}
+#main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character){
+ --figure-scale:1;--figure-lift:0px;position:relative;z-index:2;
+ transform:none;filter:none;cursor:pointer;
+ /* Fade the cutout and its light together so no hard shadow crosses the card. */
+ -webkit-mask-image:linear-gradient(#000 0 74%,transparent 100%);
+ mask-image:linear-gradient(#000 0 74%,transparent 100%);
+}
+#main[data-home="true"] .nx-cover-character{position:absolute;}
+#main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character)>img{
+ transform:translateY(var(--figure-lift)) scale(var(--figure-scale));
+ transform-origin:50% 15%;
+ filter:drop-shadow(0 6px 7px #16324366);
+ transition:transform .36s cubic-bezier(.2,.7,.25,1),filter .3s ease;
+ will-change:auto;
+}
+#main[data-home="true"] .am-character>img{transform-origin:50% 0%;}
+/* Focus and playback keep the character present without any looping animation. */
+#main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character):is(:focus-visible,:active,[data-playing="true"]){--figure-scale:var(--character-zoom);--figure-lift:-1px;}
+#main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character):is(:focus-visible,:active,[data-playing="true"])>img{
+ filter:drop-shadow(0 9px 10px #16324380) drop-shadow(0 0 2px rgba(var(--character-rim),.95)) drop-shadow(0 0 13px rgba(var(--character-rim),.85));
+}
+#main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character):focus-visible{outline:3px solid #fff4d9;outline-offset:-5px;}
+@media(hover:hover) and (pointer:fine){
+ #main[data-home="true"] :is(.nova-home,.nx-home,.am-home):hover :is(.nova-figure,.nx-cover-character,.am-character){--figure-scale:1.035;--figure-lift:-1px;}
+ #main[data-home="true"] :is(.nova-home,.nx-home,.am-home):hover :is(.nova-figure,.nx-cover-character,.am-character)>img{filter:drop-shadow(0 8px 9px #16324370) drop-shadow(0 0 8px rgba(var(--character-rim),.5));}
+ #main[data-home="true"] :is(.nova-home,.nx-home,.am-home) :is(.nova-figure,.nx-cover-character,.am-character):is(:hover,:focus-visible,[data-playing="true"]){--figure-scale:var(--character-zoom);--figure-lift:-1px;}
+ #main[data-home="true"] :is(.nova-home,.nx-home,.am-home) :is(.nova-figure,.nx-cover-character,.am-character):is(:hover,:focus-visible,[data-playing="true"])>img{filter:drop-shadow(0 9px 10px #16324380) drop-shadow(0 0 2px rgba(var(--character-rim),.95)) drop-shadow(0 0 13px rgba(var(--character-rim),.85));}
+}
+/* Reduced motion retains the light and keyboard outline without either zoom. */
+html[data-reduced-motion="true"] #main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character)>img{transform:none!important;transition:none!important;}
+@media(prefers-reduced-motion:reduce){
+ #main[data-home="true"] :is(.nova-figure,.nx-cover-character,.am-character)>img{transform:none!important;transition:none!important;}
+}

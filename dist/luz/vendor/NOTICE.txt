@@ -1,0 +1,13 @@
+MP3 encoding in DIEZ uses lamejs 1.2.1 by Alex Zhukov, a JavaScript port of
+LAME through jump3r, distributed under LGPL-3.0.
+
+LAME: https://lame.sourceforge.net/
+lamejs source: https://github.com/zhuker/lamejs
+Versioned source package: https://registry.npmjs.org/lamejs/-/lamejs-1.2.1.tgz
+
+The encoder is unmodified and loaded as a separate, locally served file.
+It sends no audio to external services. The matching unminified encoder is
+provided as lame.all.js; the original license is LICENSE.lamejs.
+The complete upstream source archive is also retained with this delivery
+in records/lamejs-1.2.1.tgz. Either encoder file may be replaced with an
+interface-compatible version without rebuilding DIEZ.

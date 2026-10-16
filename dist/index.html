@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es" data-theme="amanecer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="diez-release" content="0.8.5">
+  <meta name="theme-color" content="#eff4f2">
+  <meta name="description" content="DIEZ V0.2: demostración visual de acompañamiento general para personas adultas.">
+  <script src="./theme-init.js"></script>
+  <script src="./nexo/init.js"></script>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./skin.css">
+  <link rel="stylesheet" href="./nova/nova.css">
+  <link rel="stylesheet" href="./breathing-visual.css">
+  <link rel="stylesheet" href="./nexo/nexo.css">
+  <link rel="stylesheet" href="./visual-adjustments.css">
+  <link rel="stylesheet" href="./alma/alma.css">
+  <link rel="stylesheet" href="./lights/lights.css">
+  <link rel="stylesheet" href="./selector-layout.css">
+  <link rel="stylesheet" href="./palette-adjustments.css">
+  <link rel="stylesheet" href="./experience.css">
+  <link rel="stylesheet" href="./home-characters.css">
+  <link rel="stylesheet" href="./luz/luz.css">
+  <link rel="stylesheet" href="./approved-adjustments.css">
+  <link rel="stylesheet" href="./character-audio-hints.css">
+  <link rel="stylesheet" href="./orb-motion.css">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>DIEZ · Un lugar para volver a ti</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir al contenido</a>
+  <header class="site-header">
+    <div class="header-inner"><a class="brand" href="#inicio" data-view="inicio" aria-label="DIEZ, Inicio"><img src="./icon.svg" alt="" width="36" height="36"><span>DIEZ</span></a>
+    <nav aria-label="Navegación principal"><a href="#refugio" data-view="refugio">Tu refugio</a><a href="#apoyo" data-view="apoyo" class="support-link">Aquí contigo</a><a href="#ajustes" data-view="ajustes" aria-label="Ajustes y tema">Ajustes</a></nav><div class="theme-shortcuts" role="group" aria-label="Apariencia"><button type="button" data-theme-shortcut="amanecer" aria-label="Tema Amanecer" title="Amanecer" aria-pressed="true"></button><button type="button" data-theme-shortcut="refugio" aria-label="Tema Refugio" title="Refugio" aria-pressed="false"></button></div></div>
+  </header>
+  <main id="main" tabindex="-1"><h1>DIEZ</h1><p>Abriendo tu espacio…</p></main>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <footer><p>Acompañamiento general para personas adultas. DIEZ no diagnostica ni presta atención de emergencia.</p><p id="connection-status" role="status"></p></footer>
+  <noscript><details class="noscript"><summary>Aquí contigo</summary><h2>Apoyo en España</h2><p>El motor requiere JavaScript. En una emergencia, llama al <a href="tel:112">112</a>. Para conducta suicida o apoyo a allegados: <a href="tel:024">024</a>. Para violencia contra las mujeres: <a href="tel:016">016</a>. Son servicios externos: la llamada depende del teléfono y la cobertura.</p></details></noscript>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

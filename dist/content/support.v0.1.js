@@ -1,0 +1,6 @@
+export const SUPPORT_VERSION='support-es-2026-10-13';
+export const SUPPORT = [
+  {id:'112',title:'Emergencia inmediata',body:'Si hay peligro inmediato o una emergencia, el 112 conecta con los servicios de emergencia. Disponible en España y en la Unión Europea.',phone:'112',href:'tel:112',source:'https://administracion.gob.es/tu-espacio-europeo/derechos-obligaciones/ciudadanos/asistencia-sanitaria/numeros-urgencia',sourceName:'Punto de Acceso General · 112'},
+  {id:'024',title:'Conducta suicida y apoyo a allegados',body:'El 024 ofrece apoyo a personas con conducta suicida y a familiares y allegados. Es gratuito, confidencial y está disponible las 24 horas, todos los días.',phone:'024',href:'tel:024',source:'https://www.sanidad.gob.es/linea024/home.htm',sourceName:'Ministerio de Sanidad · 024'},
+  {id:'016',title:'Violencia contra las mujeres',body:'El 016 ofrece información, asesoramiento jurídico y atención psicosocial para violencia contra las mujeres. También orienta a su entorno. No es un recurso universal para toda violencia.',phone:'016',href:'tel:016',source:'https://violenciagenero.igualdad.gob.es/informacion-3/recursos/telefono016/',sourceName:'Ministerio de Igualdad · 016'}
+];

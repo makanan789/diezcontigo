@@ -1,0 +1,38 @@
+/* Only the two selectors and Alma's individual cover are changed. */
+.ds-selector .ds-place{padding:0;border:2px solid #fff8ee;border-radius:1.4rem;background:#fff8ee;color:#47290f;}
+.ds-selector .ds-place img{display:block;width:calc(100% - .7rem);height:144px;object-fit:cover;object-position:center 60%;margin:.35rem .35rem 0;border-radius:1rem 1rem .3rem .3rem;}
+.ds-selector .ds-place h2{font:600 1.15rem/1.3 system-ui,sans-serif;padding:0;margin:0 0 .4rem;}
+.ds-selector .ds-place span{margin:0;}
+.ds-selector .ds-place>.am-card-icon{display:flex;top:121px;left:.8rem;}
+.ds-selector .am-card-copy{min-height:120px;}
+.ds-selector .am-world-label,.ds-selector .am-top a{color:#47290f;}
+.ds-selector .am-top a{background:#fff8ee;border-color:#c6a78d;}
+.ds-selector .nova-ornament{color:#47290f;margin:0;width:40px;height:22px;}
+.ds-selector .nova-ornament path{stroke:currentColor;}
+.ds-selector .nova-audio{padding:0;margin:0;background:none;border:0;text-align:left;color:#47290f;}
+.ds-selector .nova-scene-caption{margin:0;border:0;padding:0;}
+.ds-selector .nova-transcript{font-size:1rem;line-height:1.5;max-height:190px;color:#47290f;}
+.ds-selector .nova-scene-caption>summary,.ds-selector .nova-cotejo{display:none;}
+.ds-selector .nova-audio .actions,.ds-selector .nx-audio{display:flex;justify-content:flex-start;gap:.4rem;flex-wrap:wrap;padding:.65rem 0 .5rem;margin:0;}
+.ds-selector .nova-audio button,.ds-selector .nx-audio button{flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;border:1px solid #c6a78d;border-radius:50%;background:#fff8ee;color:#47290f;}
+.ds-selector .nova-audio button:first-child,.ds-selector .nx-audio button:first-child{background:#914724;color:#fffaf2;border-color:#914724;}
+.ds-selector .am-notes-card{background:#fff8ee;color:#47290f;}
+.ds-selector .am-character img{object-fit:contain;object-position:right bottom;}
+.ds-selector .am-character:focus-visible,.ds-selector .nova-audio button:focus-visible,.ds-selector .nx-audio button:focus-visible{outline:3px solid #315d65;outline-offset:2px;}
+/* Match the compact existing Nova/Nexo presentation proportions, without clipping. */
+.am-cover .am-cover-art{height:340px;}
+.am-cover .am-cover-body h1{font-size:3.5rem;letter-spacing:.02em;}
+.am-cover .am-cover-body{padding:.6rem 1rem 1.1rem;}
+.am-cover .am-ornament{height:22px;margin:.4rem auto;}
+.am-cover .am-ornament svg{height:22px;width:22px;}
+.am-cover .am-description{font-size:1rem;line-height:1.5;margin:.7rem auto 1rem;}
+.am-cover>.am-audio{padding:0 1rem 1rem;}
+@media(max-width:650px){
+ main[data-alma]:has(>.am-cover){padding-left:.65rem;padding-right:.65rem;}
+ .ds-selector .ds-place img{height:105px;}
+ .ds-selector .ds-place>.am-card-icon{top:86px;left:.6rem;}
+ .ds-selector .ds-place h2{font-size:1rem;}
+ .ds-selector .am-card-copy{min-height:165px;}
+ .ds-selector .nova-transcript{font-size:.95rem;}
+ .am-cover .am-cover-art{height:285px;}
+}
