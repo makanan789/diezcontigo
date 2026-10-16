@@ -1,5 +1,5 @@
 /* Guidance and voluntary writing use the existing palette and local storage. */
-.home-guide{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1.2rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface);color:var(--ink);}
+.home-guide{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1.2rem 0;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface);color:var(--ink);}
 .home-guide h2{font:600 1.1rem/1.4 Georgia,serif;margin:0;}
 .home-guide p{margin:.25rem 0 0;font-size:.9rem;color:var(--muted);}
 .home-guide .button{flex:none;}

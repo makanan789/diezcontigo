@@ -14,3 +14,5 @@ Las imágenes, los audios, las narrativas, los modelos y las bases de datos exis
 Pendiente de aclaración: propuesta de Eva sobre cuatro opciones y un círculo superior izquierdo. No se ha implementado ese punto.
 
 Verificación de este lote: sintaxis JavaScript y cotejo de archivos; publicación confirmada por Sites. No se presenta como una nueva auditoría funcional completa ni como validación clínica.
+
+Ajuste visual posterior dentro de 0.8.6: separar el bloque de primera visita de la cabecera con un margen de 1,2 rem, manteniendo la separación con las tarjetas.

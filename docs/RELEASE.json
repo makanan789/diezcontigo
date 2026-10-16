@@ -1,11 +1,11 @@
 {
   "version": "0.8.6",
   "prepared_on": "2026-10-16",
-  "source_commit": "f272a0b3655a8cbe85a7c5ac9d8e1676b9692a6e",
+  "source_commit": "33e8d94f5ae00763fd9af2c5d93e42ffaa99888c",
   "published_url": "https://diezcontigo.makanan-music.chatgpt.site/",
   "source_static_files": 162,
-  "source_static_bytes": 40551112,
-  "hosting_version_number": 6,
+  "source_static_bytes": 40551118,
+  "hosting_version_number": 7,
   "scope": "Copia de la aplicación publicada y documentación para evaluación; importación a GitHub posterior al desarrollo.",
   "source_dist_unchanged": true,
   "changes": [
