@@ -52,6 +52,12 @@ records/               Paquete original de la dependencia lamejs
 MANIFEST.sha256        Huellas de los archivos de esta entrega
 ```
 
+## Escritura con tus palabras
+
+En las preguntas de Nova, Nexo, Alma y Luz, «Quiero expresarlo con mis palabras» abre un campo de hasta 2000 caracteres. Solo se guarda por decisión de la persona, en las notas locales de ese personaje. El texto libre no se interpreta ni selecciona una rama narrativa. Se puede volver a las opciones o consultar las notas.
+
+El inicio y el pie de página enlazan a «¿Qué es DIEZ?». Tu refugio explica la diferencia entre ideas breves y los cuadernos de los personajes.
+
 ## Datos y audio
 
 Las notas y las frases se guardan en IndexedDB del navegador. Los ajustes usan localStorage. No hay cuenta de usuario, sincronización ni copia remota de las notas.
@@ -62,7 +68,7 @@ El acceso a la aplicación sí requiere recursos del alojamiento web. No se pres
 
 ## Versión y proceso
 
-Este repositorio contiene una copia íntegra de los 160 archivos de `dist` de la versión **0.8.5**, identificada en la publicación del 16 de octubre de 2026. La procedencia y el commit de la fuente se registran en [RELEASE.json](docs/RELEASE.json).
+Este repositorio contiene una copia íntegra de los 162 archivos de `dist` de la versión **0.8.6**, identificada en la publicación del 16 de octubre de 2026. La procedencia y el commit de la fuente se registran en [RELEASE.json](docs/RELEASE.json).
 
 La importación a GitHub se realiza después de la construcción de la aplicación. El historial de este repositorio no se presenta como el historial completo de desarrollo: el proceso de Vibe Coding se documenta en un Google Doc independiente.
 

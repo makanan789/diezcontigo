@@ -1,12 +1,15 @@
 {
-  "id": "diez-orbe-voz-intenso-20261016",
-  "version": "0.8.5",
+  "id": "diez-guia-escritura-libre-20261016",
+  "version": "0.8.6",
   "date": "2026-10-16",
   "scope": [
-    "Mayor sensibilidad visual al volumen del micrófono",
-    "Expansión del orbe de hasta el 65 por ciento",
-    "Halo, brillo y anillos interiores reactivos a la voz",
-    "Respuesta rápida al hablar y retorno suave al silencio",
-    "Más espacio alrededor del orbe de grabación"
+    "Pistas de audio sin X y texto breve adaptable",
+    "Escritura libre voluntaria en las preguntas de los cuatro personajes",
+    "Guardado en las bases de notas existentes y protección del borrador",
+    "Guía de Tu refugio y acceso a los cuadernos",
+    "Qué es DIEZ: orientación, funcionamiento y límites"
+  ],
+  "pending": [
+    "Aclaración de Eva sobre cuatro opciones y círculo superior izquierdo"
   ]
 }

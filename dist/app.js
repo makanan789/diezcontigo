@@ -16,9 +16,9 @@ import {createBreathingPlayer} from './breathing-player.js';
 import * as refuge from './refuge-db.js';
 import {createNova} from './nova/nova-ui.js';
 import {createNexo} from './nexo/ui.js';
-document.documentElement.dataset.diezRelease='0.8.5';
+document.documentElement.dataset.diezRelease='0.8.6';
 const main=document.querySelector('#main');const live=document.querySelector('#announcement');
-const views=new Set(['inicio','recorrido','apoyo','refugio','ajustes','respira','orientacion','calma','externa','confianza','nova','nexo','alma','luz','luces']);
+const views=new Set(['inicio','diez','recorrido','apoyo','refugio','ajustes','respira','orientacion','calma','externa','confianza','nova','nexo','alma','luz','luces']);
 let view='inicio',pathId=null,journey=null,breathing=newSession(),orbTime=0,breathingStarted=false,helpReturn={view:'inicio'};
 let breathingAudioMessage='',breathingAudioLoading=false,breathingAudioFailed=false,breathingControlChanging=false;
 const breathingPlayer=createBreathingPlayer({assets:STAGES.map(s=>audioContract(s).asset),register:registerAudio,onChange:s=>{
@@ -95,6 +95,7 @@ function render(){
   homeInteractionsCleanup?.();homeInteractionsCleanup=null;
   const token=++renderId;lightsCleanup?.();lightsCleanup=null;clearDraft();refugeDirty=()=>false;main.replaceChildren();main.dataset.home=String(view==='inicio');delete main.dataset.node;delete main.dataset.contentVersion;delete main.dataset.simpleWorld;delete main.dataset.luz;delete main.dataset.luzRoute;delete main.dataset.luzPhase;delete main.dataset.alma;delete main.dataset.almaPhase;delete main.dataset.almaRoute;delete main.dataset.nexo;delete main.dataset.nexoPhase;delete main.dataset.nexoRoute;delete main.dataset.nova;delete main.dataset.novaRoute;delete main.dataset.novaPhase;main.classList.remove('nova-cover-view');editId=null;busy=false;
   if(view==='inicio')renderHome();
+  if(view==='diez')renderAbout();
   if(view==='recorrido')renderJourney();
   if(view==='apoyo')renderSupport();
   if(view==='refugio')renderRefuge(token);
@@ -134,7 +135,25 @@ function renderHome(){
   for(const [next,heading,description,icon] of [['refugio','Tu refugio','Guarda y vuelve a tus ideas.','◇'],['apoyo','Aquí contigo','Un espacio para encontrar apoyo.','♡']]){
     const card=link('',next,null,{class:'card home-link'});const orb=append(el('span',null,{class:'utility-orb '+(next==='refugio'?'refuge-orb':'support-orb'),'aria-hidden':'true'}),presentationIcon(next==='refugio'?'note':'people'));append(card,orb,append(el('div'),el('h2',heading),el('p',description)),el('span','→',{class:'chevron','aria-hidden':'true'}));extras.append(card);
   }
-  append(main,hero,append(el('div',null,{class:'home-layout'}),grid,extras),lightsEntry(),el('p','Elige a tu ritmo. Puedes salir o acudir directamente a ayuda externa cuando lo necesites.',{class:'note'}));
+  const guide=append(el('section',null,{class:'home-guide','aria-label':'Conoce DIEZ'}),append(el('div'),el('h2','¿Es tu primera visita?'),el('p','Conoce los personajes, las herramientas y cómo usar este espacio.')),link('¿Qué es DIEZ?','diez',null,{class:'button secondary'}));
+  append(main,hero,guide,append(el('div',null,{class:'home-layout'}),grid,extras),lightsEntry(),el('p','Elige a tu ritmo. Puedes salir o acudir directamente a ayuda externa cuando lo necesites.',{class:'note'}));
+}
+function renderAbout(){
+  title('¿Qué es DIEZ?','Conoce este espacio');
+  main.append(el('p','DIEZ es un espacio de acompañamiento general para personas adultas. Puedes explorar lo que te ocurre mediante historias, escuchar a sus personajes, escribir para ti o hacer una pausa.',{class:'lead'}));
+  const section=(heading,text)=>append(el('section',null,{class:'panel diez-guide-section'}),el('h2',heading),el('p',text));
+  main.append(section('Cuatro personajes, cuatro puertas','Nova acompaña situaciones de relaciones; Nexo, del trabajo; Alma, de la familia; y Luz, de la vida personal. Puedes empezar por el que te apetezca y cambiar cuando quieras.'));
+  const how=section('Cómo empezar','Toca la imagen de un personaje o su botón Escuchar para oír su presentación. La flecha de su tarjeta permite entrar en su mundo.');
+  const steps=el('ol');
+  for(const text of ['Elige un lugar y una historia que se acerquen a tu momento.','Lee las opciones y elige solo si alguna encaja contigo. También puedes escribir con tus palabras y guardar tu reflexión en las notas del personaje.','Puedes volver, cambiar de lugar o salir. No hay respuestas correctas ni obligación de terminar.'])steps.append(el('li',text));
+  how.append(steps);main.append(how);
+  const tools=section('Otras formas de acompañarte','Respira conmigo ofrece tres etapas de audio con un orbe visual. Suelta tu voz, dentro de Luz, permite grabar, escuchar y descargar tu voz. Diez pequeñas luces reúne lecturas y un baúl donde puedes guardar tus propias frases.');
+  tools.append(link('Conocer Tu refugio','refugio',null,{class:'button secondary'}));main.append(tools);
+  main.append(section('Qué puedes esperar','Los relatos y sus continuaciones están preparados de antemano. Las opciones muestran distintos caminos; DIEZ no interpreta lo que escribes ni genera respuestas personalizadas. El orbe de voz reacciona al volumen del sonido, sin interpretar las palabras ni evaluar emociones.'));
+  const limits=section('Qué no ofrece DIEZ','DIEZ no diagnostica, no ofrece terapia ni sustituye la atención profesional. Tampoco hay una persona atendiendo en directo ni se reciben avisos. En Aquí contigo puedes encontrar opciones de apoyo y acceso a ayuda externa.');
+  limits.append(link('Ir a Aquí contigo','apoyo',null,{class:'button secondary'}));main.append(limits);
+  main.append(section('Tus textos y grabaciones','Las ideas, notas y frases que decides guardar se conservan en ese navegador y dispositivo, sin cuenta ni copia remota. Pueden perderse al borrar sus datos y no se trasladan a otro navegador. Si compartes el dispositivo, otras personas con acceso podrían leerlas. Las grabaciones de Suelta tu voz permanecen en la sesión hasta que las descargas o las descartas.'));
+  main.append(actions(link('Elegir un personaje','inicio',null,{class:'button'})));
 }
 function renderJourney(){
   const path=PATHS[journey.pathId];const node=currentNode(journey);
@@ -203,8 +222,13 @@ function renderTrusted(){
   append(main,append(el('section',null,{class:'panel'}),el('label','Mensaje de ejemplo editable',{for:'trusted-draft'}),draft,el('p','Elige destinatario en tu aplicación. Si usas Abrir Mensajes, copia y pega este texto allí: la precarga del mensaje varía según el dispositivo.',{id:'trusted-limit',class:'note'}),status,controls),el('p',isMobileMessagesAvailable()?'Abrir Mensajes depende de que exista una aplicación compatible. Si no se abre, utiliza Copiar mensaje.':'En este navegador puedes copiar el mensaje y abrir después la aplicación que prefieras.',{class:'draft-help note'}),actions(link('Volver a ayuda externa','externa',null,{class:'button secondary'}),link('Salir a Inicio','inicio',null,{class:'button secondary'})));
 }
 function renderRefuge(token){
-  title('Tu refugio','Ideas breves · Solo en este navegador');
-  append(main,el('p','Guarda una idea cotidiana que quieras consultar después. No incluyas nombres reales, teléfonos, direcciones, diagnósticos ni información sensible. En esta versión de prueba, utiliza solo datos sintéticos.',{class:'notice'}),el('p','Las ideas se guardan en este navegador y dispositivo. Borrar sus datos, usar modo privado o cambiar de navegador puede hacer que se pierdan. No hay cuenta ni copia remota.',{class:'note'}));
+  title('Tu refugio','Tus ideas y el acceso a tus notas');
+  main.append(el('p','Aquí puedes guardar una idea breve para volver a leerla después. También encontrarás el acceso a las notas que has escrito con cada personaje.',{class:'lead'}));
+  const guide=append(el('section',null,{class:'panel refuge-guide','aria-labelledby':'refuge-guide-title'}),el('h2','Cómo usar Tu refugio',{id:'refuge-guide-title'}));
+  const steps=el('ol');for(const text of ['Escribe una idea y pulsa Guardar idea.','Vuelve a Tu refugio desde la barra principal: tus ideas aparecerán debajo del formulario.','Para recuperar una reflexión de un recorrido, abre Notas de Nova, Nexo, Alma o Luz al final de esta página.'])steps.append(el('li',text));guide.append(steps);main.append(guide);
+  main.append(el('p','Todo se guarda solo en este navegador y dispositivo. No hay cuenta, sincronización ni copia remota; borrar sus datos o usar una sesión privada puede hacer que pierdas lo guardado.',{class:'note'}));
+  const privacy=el('details',null,{class:'notes-info'});privacy.append(el('summary','Sobre esta versión de prueba y tus datos'),el('p','Utiliza ejemplos ficticios. No incluyas nombres reales, teléfonos, direcciones, diagnósticos ni información sensible. Si compartes el dispositivo, otras personas con acceso al navegador podrían leer lo guardado.',{class:'note'}));main.append(privacy);
+  main.append(el('h2','Tus ideas breves'));
   const form=el('form',null,{id:'refuge-form',class:'panel',novalidate:''});
   const input=el('textarea',null,{id:'refuge-text',maxlength:'300',rows:'3','aria-describedby':'refuge-hint refuge-message',required:''});
   refugeDirty=()=>Boolean(input.value.trim());trackDraft(refugeDirty);
@@ -215,7 +239,7 @@ function renderRefuge(token){
   const list=el('ul',null,{id:'refuge-items',class:'items','aria-label':'Ideas guardadas'});
   const empty=el('p','Consultando tus ideas…',{id:'refuge-empty'});
   const reload=button('Consultar ideas',()=>refresh(),{secondary:true,id:'refuge-query'});
-  append(main,form,actions(reload),empty,list,actions(link('Notas de Nova','nova','notas/todas',{class:'button secondary'}),link('Notas de Nexo','nexo','notas/todas',{class:'button secondary'}),link('Notas de Alma','alma','notas/todas',{class:'button secondary'}),link('Notas de Luz','luz','notas/todas',{class:'button secondary'}),link('Volver a Inicio','inicio',null,{class:'button secondary'})));
+  append(main,form,actions(reload),empty,list,el('h2','Notas de tus personajes'),el('p','Las reflexiones que guardas dentro de un personaje están en su cuaderno. Elige uno para consultarlas, editarlas o eliminarlas.',{class:'note'}),actions(link('Notas de Nova','nova','notas/todas',{class:'button secondary'}),link('Notas de Nexo','nexo','notas/todas',{class:'button secondary'}),link('Notas de Alma','alma','notas/todas',{class:'button secondary'}),link('Notas de Luz','luz','notas/todas',{class:'button secondary'})),actions(link('Volver a Inicio','inicio',null,{class:'button secondary'})));
   function message(text,error=false){status.textContent=text;status.className=error?'message error':'message';input.setAttribute('aria-invalid',String(error));}
   function locked(value){busy=value;for(const b of main.querySelectorAll('button'))b.disabled=value;}
   async function refresh(){

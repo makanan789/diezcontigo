@@ -1,0 +1,29 @@
+/* Guidance and voluntary writing use the existing palette and local storage. */
+.home-guide{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1.2rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface);color:var(--ink);}
+.home-guide h2{font:600 1.1rem/1.4 Georgia,serif;margin:0;}
+.home-guide p{margin:.25rem 0 0;font-size:.9rem;color:var(--muted);}
+.home-guide .button{flex:none;}
+.diez-guide-section,.refuge-guide{margin:1rem 0;}
+.diez-guide-section h2,.refuge-guide h2{margin-top:0;}
+:is(.diez-guide-section,.refuge-guide) li{margin:.65rem 0;}
+.diez-guide-section p{max-width:68ch;}
+.free-response{width:100%;min-width:0;margin-top:1rem;padding-top:1rem;border-top:1px solid #829091;}
+.free-response .free-response-open{width:100%;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left;justify-content:flex-start;font-weight:500;line-height:1.5;background:#c6dad1;color:#263a3d;border:1px solid #829091;}
+.free-response-form{margin-top:1rem;padding:1rem;border:1px solid #829091;border-radius:1rem;background:var(--surface);color:var(--ink);}
+.free-response .free-response-context{font:500 1rem/1.6 Georgia,serif;color:var(--ink);margin:0 0 1rem;white-space:pre-wrap;}
+.free-response-form label{display:block;margin-bottom:.5rem;color:var(--ink);}
+.free-response-form textarea{display:block;min-height:9rem;width:100%;max-width:100%;resize:vertical;font:inherit;line-height:1.6;background:var(--surface);color:var(--ink);border:1px solid var(--accent);}
+.free-response-form .note,.free-response-form .message{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.free-response-form .actions{flex-wrap:wrap;gap:.65rem;}
+.free-response-form .actions :is(button,a){min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.5;}
+.free-response-form button[type="submit"]{background:var(--accent);color:var(--bg);}
+.free-response-form :is(button.secondary,a.secondary){background:var(--surface);color:var(--accent);}
+.free-response [hidden]{display:none!important;}
+.free-response :is(button,a,textarea):focus-visible{outline:3px solid var(--focus);outline-offset:3px;}
+@media(max-width:650px){
+ .home-guide{align-items:flex-start;flex-direction:column;gap:.75rem;}
+ .home-guide .button{width:100%;}
+ .free-response-form{padding:.85rem;}
+ .free-response-form .actions{flex-direction:column;}
+ .free-response-form .actions :is(button,a){width:100%;}
+}

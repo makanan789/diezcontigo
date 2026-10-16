@@ -12,32 +12,28 @@ function remember(id){known.add(id);try{localStorage.setItem(preferenceKey,JSON.
 function speaker(){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');for(const[k,v]of Object.entries({viewBox:'0 0 24 24',width:22,height:22,fill:'none',stroke:'currentColor','stroke-width':1.7,'stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'}))svg.setAttribute(k,v);const p=document.createElementNS(svg.namespaceURI,'path');p.setAttribute('d','M11 4L6 8H3v8h3l5 4z M15 8a6 6 0 0 1 0 8 M18 5a10 10 0 0 1 0 14');svg.append(p);return svg;}
 export function mountHomeInteractions(main){
  const cleanups=[];
- const mouse=matchMedia('(min-width:651px) and (hover:hover) and (pointer:fine)');
  for(const character of characters)for(const card of main.querySelectorAll(character.card)){
   const art=card.querySelector(character.art),figure=card.querySelector(character.figure);if(!art||!figure)continue;
   const panel=document.createElement('div');panel.className='character-audio-hint';panel.dataset.world=character.id;
   const play=document.createElement('button');play.type='button';play.className='character-audio-invite';
   const text=document.createElement('span');play.append(speaker(),text);
-  const close=document.createElement('button');close.type='button';close.className='character-audio-dismiss';close.textContent='×';close.setAttribute('aria-label','Ocultar la pista de audio de '+character.name);
-  panel.append(play,close);art.after(panel);
+  panel.append(play);art.after(panel);
   let visible=false;
   function paint(){
    const active=figure.dataset.playing==='true';if(active&&!known.has(character.id))remember(character.id);
    const intro=visible&&!known.has(character.id)&&!active;panel.dataset.intro=String(intro);panel.dataset.playing=String(active);
-   text.textContent=active?(mouse.matches?'Clic para pausar':'Toca para pausar'):intro?(mouse.matches?'Haz clic para escucharme':'Tócame para escucharme'):'Escuchar a '+character.name;
-   play.setAttribute('aria-label',active?'Pausar a '+character.name:'Escuchar a '+character.name);play.setAttribute('aria-pressed',String(active));close.hidden=!intro;
+   text.textContent='Escuchar a '+character.name;
+   play.setAttribute('aria-label',active?'Pausar a '+character.name:'Escuchar a '+character.name);play.setAttribute('aria-pressed',String(active));
   }
   function learn(){remember(character.id);paint();}
-  function dismiss(){learn();if(document.activeElement===close)play.focus({preventScroll:true});}
   function focus(){visible=true;paint();}
-  function escape(event){if(event.key==='Escape'&&panel.dataset.intro==='true'){event.preventDefault();dismiss();}}
-  play.addEventListener('click',()=>figure.click());close.addEventListener('click',dismiss);figure.addEventListener('click',learn);
-  figure.addEventListener('focus',focus);panel.addEventListener('focusin',focus);card.addEventListener('keydown',escape);
+  play.addEventListener('click',()=>figure.click());figure.addEventListener('click',learn);
+  figure.addEventListener('focus',focus);panel.addEventListener('focusin',focus);
   const stateObserver=new MutationObserver(paint);stateObserver.observe(figure,{attributes:true,attributeFilter:['data-playing']});
   let viewportObserver;
   if('IntersectionObserver' in window){viewportObserver=new IntersectionObserver(entries=>{for(const entry of entries){visible=entry.isIntersecting;paint();}},{threshold:.5});viewportObserver.observe(panel);}else visible=true;
-  mouse.addEventListener('change',paint);paint();
-  cleanups.push(()=>{stateObserver.disconnect();viewportObserver?.disconnect();mouse.removeEventListener('change',paint);figure.removeEventListener('click',learn);figure.removeEventListener('focus',focus);card.removeEventListener('keydown',escape);});
+  paint();
+  cleanups.push(()=>{stateObserver.disconnect();viewportObserver?.disconnect();figure.removeEventListener('click',learn);figure.removeEventListener('focus',focus);});
  }
  // Coarse-pointer screens highlight these entrances as the person scrolls.
  const entrances=[...main.querySelectorAll('.home-extras>.card,.dl-entry')];

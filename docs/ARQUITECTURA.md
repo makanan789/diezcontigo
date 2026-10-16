@@ -1,4 +1,4 @@
-# Arquitectura de DIEZ 0.8.5
+# Arquitectura de DIEZ 0.8.6
 
 Cliente web estático con módulos JavaScript y navegación mediante fragmentos de URL. `app.js` compone las vistas y coordina la navegación. Cada mundo separa datos, modelo de decisiones, interfaz y notas.
 
@@ -11,6 +11,8 @@ Cliente web estático con módulos JavaScript y navegación mediante fragmentos 
 
 Nova y Nexo utilizan dos decisiones de dos opciones; la segunda pregunta depende de la primera elección. Alma y Luz utilizan dos decisiones de cuatro opciones; los cierres de sus modelos se seleccionan por la segunda elección. No se atribuye el mismo árbol de ramificación a todos los mundos.
 
+`free-response.js` añade escritura libre voluntaria en las dos preguntas de cada recorrido; guarda el texto literal en la base de notas existente del personaje, sin interpretar su contenido ni cambiar el estado de decisiones. `visitor-guide.css` presenta la orientación y el editor. La ruta `#diez` explica el funcionamiento y los límites.
+
 `world-notes.js` reúne el editor; `next-step.js` ofrece continuaciones voluntarias; `draft-guard.js` interviene ante borradores pendientes. `presentation.js` coordina los audios. `breathing-player.js` controla solicitudes, cambios de etapa, errores y tiempos de espera.
 
 El Service Worker precarga código, estilos y medios principales. Las imágenes y audios restantes se almacenan al solicitarse. La primera visita y las actualizaciones requieren conexión; los recursos no descargados no se garantizan sin conexión. El navegador puede eliminar datos y caché.
@@ -19,5 +21,5 @@ El paquete no incluye servidor propio, autenticación de visitantes ni una API g
 
 ## Alcance de la evidencia
 
-La copia de `dist` se coteja por tamaño y SHA-256 con la fuente identificada. La descripción técnica no equivale a una nueva batería completa de pruebas. Siguen pendientes el cierre de auditoría en móvil físico, las mediciones de rendimiento móvil y la revisión integral de accesibilidad.
+La copia de `dist` se coteja por tamaño y SHA-256 con la fuente identificada. La descripción técnica no equivale a una nueva batería completa de pruebas. David ha dado por cerrada su revisión de la experiencia móvil de 0.8.5. Esa aprobación humana no equivale a una auditoría técnica completa. Los ajustes de 0.8.6 cuentan con revisión de sintaxis y conservación de recursos; no se ha ejecutado una nueva batería funcional ni una revisión integral de accesibilidad.
 
