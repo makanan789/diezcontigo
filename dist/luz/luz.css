@@ -47,6 +47,9 @@ main[data-luz]{max-width:1040px;}
 .lz-world-label h1:not(:first-child){font:500 clamp(1.8rem,3vw,2.4rem)/1.2 Georgia,serif;max-width:18ch;margin:1rem 0;}
 .lz-world-description{font-size:1.15rem;line-height:1.5;max-width:26ch;}
 .lz-world-label .lz-kicker,.lz-world-label .lz-ornament{text-align:left;justify-content:flex-start;}
+.lz-world[data-scene="selector"] .lz-world-identity{width:max-content;max-width:100%;}
+.lz-world[data-scene="selector"] .lz-world-identity>.lz-kicker{box-sizing:border-box;width:100%;text-align:center;}
+.lz-world[data-scene="selector"] .lz-world-identity>.lz-ornament{box-sizing:border-box;width:100%;justify-content:center;margin:.4rem 0;}
 .lz-hero>.lz-character{height:430px;mask-image:linear-gradient(#000 0 85%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 85%,transparent 100%);}
 .lz-hero>.lz-character img{object-fit:cover;object-position:center top;transform-origin:center 20%;}
 .lz-bubble{position:relative;grid-column:1/-1;border:1px solid #c7b2d2;border-radius:1.4rem;background:#fff9f1f5;color:#342841;padding:1rem 1.2rem;line-height:1.55;box-shadow:0 6px 15px #34284112;}

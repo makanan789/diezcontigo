@@ -1,4 +1,4 @@
-import {trackDraft} from './draft-guard.js';
+import {trackDraft} from './draft-guard.js?v=0.15.4';
 
 const element=(tag,text,attrs={})=>{
  const node=document.createElement(tag);

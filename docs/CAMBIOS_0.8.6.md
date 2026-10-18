@@ -1,3 +1,5 @@
+> Registro histórico de 0.8.6; no describe el estado actual de 0.15.6.
+
 # Actualización 0.8.6 · 16 de octubre de 2026
 
 Cambios aprobados durante la revisión de uso:
@@ -11,7 +13,7 @@ Cambios aprobados durante la revisión de uso:
 
 Las imágenes, los audios, las narrativas, los modelos y las bases de datos existentes se conservan.
 
-Pendiente de aclaración: propuesta de Eva sobre cuatro opciones y un círculo superior izquierdo. No se ha implementado ese punto.
+Pendiente de aclaración: propuesta visual sobre cuatro opciones y un círculo superior izquierdo. No se ha implementado ese punto.
 
 Verificación de este lote: sintaxis JavaScript y cotejo de archivos; publicación confirmada por Sites. No se presenta como una nueva auditoría funcional completa ni como validación clínica.
 

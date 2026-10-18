@@ -1,4 +1,4 @@
-import {DATA} from './data.js';
+import {DATA} from './data.js?v=0.15.4';
 const NARRATIVE={escenarios:Object.fromEntries(DATA.scenes.filter(s=>s.id!=='00').map(s=>[s.id,s])),recorridos:DATA.routes.map(r=>({...r,escenario:r.scene,entrada:r.entry,primera_pregunta:r.question,cierre:r.close,primeras_opciones:r.branches.map(b=>({texto:b.text,respuesta:b.answer,segunda_pregunta:b.question,segundas_opciones:b.options.map(o=>({texto:o.text,respuesta:o.answer}))}))}))};
 export const SCENES=Object.keys(NARRATIVE.escenarios);
 export const ROUTES=new Map(NARRATIVE.recorridos.map(r=>[r.id,r]));

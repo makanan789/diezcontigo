@@ -20,6 +20,11 @@
 .free-response-form :is(button.secondary,a.secondary){background:var(--surface);color:var(--accent);}
 .free-response [hidden]{display:none!important;}
 .free-response :is(button,a,textarea):focus-visible{outline:3px solid var(--focus);outline-offset:3px;}
+.backup-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;margin-top:.8rem;}
+.backup-download[hidden]{display:none;}
+#backup-file{display:block;width:100%;max-width:100%;margin:.35rem 0 .7rem;padding:.55rem;border:1px solid var(--border);border-radius:.7rem;background:var(--surface);color:var(--ink);font:inherit;}
+.backup-preview{padding:.85rem;border-radius:.8rem;background:var(--soft);color:var(--ink);}
+.backup-status{min-height:1.5em;line-height:1.65;}
 @media(max-width:650px){
  .home-guide{align-items:flex-start;flex-direction:column;gap:.75rem;}
  .home-guide .button{width:100%;}

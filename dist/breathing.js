@@ -1,4 +1,4 @@
-import { STAGES } from './content/breathing.v0.1.js';
+import { STAGES } from './content/breathing.v0.1.js?v=0.15.4';
 export const newSession=()=>({stage:0,playback:'stopped'});
 export function transition(state,action) {
   switch(action) {

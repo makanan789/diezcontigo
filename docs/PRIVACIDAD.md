@@ -18,7 +18,7 @@ El código detiene las pistas del micrófono y libera los recursos al terminar o
 
 El código revisado no implementa la subida de notas, frases o grabaciones. El alojamiento puede mantener registros técnicos de acceso; no se ha auditado su retención. Los enlaces externos abren servicios ajenos a DIEZ.
 
-Los datos locales no se sincronizan ni tienen copia remota. No se declara cifrado de las notas. Otras personas con acceso al mismo perfil podrían leerlas. Borrar los datos del sitio puede eliminarlas.
+Los datos locales no se sincronizan ni tienen copia remota. Desde Ajustes, la persona puede exportar una copia JSON con sus ideas, notas y frases. Ese archivo contiene sus textos y debe guardarse en un lugar privado. Se puede recuperar en otro navegador o dispositivo; la recuperación conserva las entradas existentes y añade las que falten. Las grabaciones se descargan por separado desde Suelta tu voz. No se declara cifrado de las notas. Otras personas con acceso al mismo perfil podrían leerlas. Borrar los datos del sitio puede eliminarlas.
 
 La evaluación se realiza con datos ficticios. Este repositorio no incluye conversaciones privadas, bases de datos de visitantes ni grabaciones personales.
 

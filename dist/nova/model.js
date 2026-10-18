@@ -1,4 +1,4 @@
-import {NARRATIVE} from './narrativa.v1.js';
+import {NARRATIVE} from './narrativa.v1.js?v=0.15.4';
 export const SCENES=Object.keys(NARRATIVE.escenarios);
 export const ROUTES=new Map(NARRATIVE.recorridos.map(r=>[r.id,r]));
 const PHASES=['entry','q1','a1','q2','a2','close'];

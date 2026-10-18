@@ -103,11 +103,13 @@ html[data-reduced-motion="true"] #main[data-home="true"] .grid>.door:is(:hover,:
 .refuge-orb:after {content:'';position:absolute;inset:8% 17% auto 17%;height:19%;border-radius:50%;background:linear-gradient(#ffffff99,transparent);transform:rotate(-15deg);}
 .utility-orb svg {position:relative;z-index:1;width:31px;height:31px;filter:drop-shadow(0 1px 2px #243a5566);}
 .support-orb {
- background:radial-gradient(circle at 62% 34%,#ffe4d5 0%,#d9c3e6 31%,#ae9aca 58%,#7d77a4 80%,#575c83 100%);
- box-shadow:0 0 16px 2px #e1c5ff55,inset 0 0 11px #fff2ea88;color:#fff8f4;
+ background:radial-gradient(circle at 35% 27%,#f3f6d7 0%,#c7e4d9 26%,#88c0b9 53%,#4f8e94 78%,#315e70 100%);
+ box-shadow:0 0 16px 2px #ace7db66,inset 0 0 11px #fff7da99;color:#fffdf5;
 }
-.support-orb:before {content:'';position:absolute;inset:12% 5%;border:1px solid #fceaff99;border-radius:50%;transform:rotate(-35deg);box-shadow:0 0 6px #fae3ff33;}
-.support-orb:after {content:'';position:absolute;width:20px;height:13px;top:8%;left:19%;background:radial-gradient(ellipse,#fff6e8a0,transparent 75%);transform:rotate(-25deg);}
+.support-orb:before {content:'';position:absolute;inset:12% 5%;border:1px solid #f3fff0b0;border-radius:50%;transform:rotate(-35deg);box-shadow:0 0 7px #d8fff055;}
+.support-orb:after {content:'';position:absolute;width:20px;height:13px;top:8%;left:19%;background:radial-gradient(ellipse,#fffce0bb,transparent 75%);transform:rotate(-25deg);}
+.home-extras .support-link{background:linear-gradient(130deg,#5c5485,#35466e);color:#fff9f1;border-color:#8079aa;}
+.home-extras .support-link :is(h2,p){color:inherit;}
 @media(min-width:1000px){
  .home-extras .breathing-card .mini-orb,.home-extras .utility-orb{width:58px;height:58px;}
  .home-extras .breathing-card,.home-extras .home-link{gap:.55rem;}

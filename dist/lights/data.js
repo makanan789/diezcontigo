@@ -81,6 +81,5 @@ export const COLLECTION={
       "text": "«A veces, para llegar más lejos, no necesitamos acelerar el paso. Necesitamos recordar por qué empezamos a caminar».",
       "sourceParagraph": 99
     }
-  ],
-  "credit": "David Salgado"
+  ]
 };

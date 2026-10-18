@@ -12,11 +12,16 @@ function remember(id){known.add(id);try{localStorage.setItem(preferenceKey,JSON.
 function speaker(){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');for(const[k,v]of Object.entries({viewBox:'0 0 24 24',width:22,height:22,fill:'none',stroke:'currentColor','stroke-width':1.7,'stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'}))svg.setAttribute(k,v);const p=document.createElementNS(svg.namespaceURI,'path');p.setAttribute('d','M11 4L6 8H3v8h3l5 4z M15 8a6 6 0 0 1 0 8 M18 5a10 10 0 0 1 0 14');svg.append(p);return svg;}
 export function mountHomeInteractions(main){
  const cleanups=[];
+ for(const figure of main.querySelectorAll('.am-hero>.am-character,.lz-hero>.lz-character,.nx-hero>.nx-character,.nova-scene-hero>.nova-figure')){figure.tabIndex=-1;figure.setAttribute('aria-hidden','true');}
  for(const character of characters)for(const card of main.querySelectorAll(character.card)){
   const art=card.querySelector(character.art),figure=card.querySelector(character.figure);if(!art||!figure)continue;
+  // The portrait remains a pointer target; the visible label is the single
+  // keyboard/screen-reader toggle for this presentation.
+  figure.tabIndex=-1;figure.setAttribute('aria-hidden','true');
+  const oldToggle=card.querySelector('.nova-audio-play,.nx-play,.am-play,.lz-audio>button:first-child');if(oldToggle)oldToggle.hidden=true;
   const panel=document.createElement('div');panel.className='character-audio-hint';panel.dataset.world=character.id;
   const play=document.createElement('button');play.type='button';play.className='character-audio-invite';
-  const text=document.createElement('span');play.append(speaker(),text);
+  const text=document.createElement('span');text.className='sr-only';play.append(speaker(),text);
   panel.append(play);art.after(panel);
   let visible=false;
   function paint(){
@@ -36,7 +41,24 @@ export function mountHomeInteractions(main){
   cleanups.push(()=>{stateObserver.disconnect();viewportObserver?.disconnect();figure.removeEventListener('click',learn);figure.removeEventListener('focus',focus);});
  }
  // Coarse-pointer screens highlight these entrances as the person scrolls.
- const entrances=[...main.querySelectorAll('.home-extras>.card,.dl-entry')];
+ if(main.dataset.home==='true'){
+  const cards=[...main.querySelectorAll('.nova-home,.nx-home,.am-home,.lz-home')],orbs=[...main.querySelectorAll('.home-extras>.home-tool')],touch=matchMedia('(hover: none), (pointer: coarse)'),motion=matchMedia('(prefers-reduced-motion: reduce)');
+  let frame=0;
+  function update(){
+   frame=0;let nearest=null,distance=Infinity;
+   if(touch.matches&&!motion.matches&&document.documentElement.dataset.reducedMotion!=='true'){
+    const header=document.querySelector('.site-header').getBoundingClientRect().bottom,height=window.visualViewport?.height||innerHeight,center=header+(height-header)/2;
+    for(const card of [...cards,...orbs]){const rect=card.getBoundingClientRect();if(rect.bottom<=header||rect.top>=height)continue;const d=Math.abs(rect.top+rect.height/2-center);if(d<distance){nearest=card;distance=d;}}
+   }
+   for(const card of cards)card.dataset.characterInView=String(card===nearest);
+   for(const card of orbs)card.dataset.orbInView=String(card===nearest);
+  }
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
+  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);touch.addEventListener('change',schedule);motion.addEventListener('change',schedule);
+  const preferences=new MutationObserver(schedule);preferences.observe(document.documentElement,{attributes:true,attributeFilter:['data-reduced-motion']});schedule();
+  cleanups.push(()=>{cancelAnimationFrame(frame);removeEventListener('scroll',schedule);removeEventListener('resize',schedule);touch.removeEventListener('change',schedule);motion.removeEventListener('change',schedule);preferences.disconnect();});
+ }
+ const entrances=[...main.querySelectorAll('.home-extras>.card:not(.home-tool),.dl-entry')];
  if(main.dataset.home==='true'&&'IntersectionObserver' in window){
   const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting&&entry.intersectionRatio>=.7)entry.target.dataset.inView='true';else if(!entry.isIntersecting||entry.intersectionRatio<.5)entry.target.dataset.inView='false';}},{threshold:[0,.5,.7],rootMargin:'-120px 0px -18px 0px'});
   for(const entry of entrances)observer.observe(entry);cleanups.push(()=>observer.disconnect());

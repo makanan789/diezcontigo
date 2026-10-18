@@ -1,4 +1,4 @@
-import {trackDraft} from './draft-guard.js';
+import {trackDraft} from './draft-guard.js?v=0.15.4';
 // Shared local editor. Existing world databases are retained; drafts live only in memory.
 const el=(tag,text,attrs={})=>{const e=document.createElement(tag);if(text!=null)e.textContent=text;for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);return e;};
 const button=(label,fn,attrs={})=>{const e=el('button',label,{type:'button',...attrs});e.addEventListener('click',()=>Promise.resolve().then(fn).catch(console.error));return e;};

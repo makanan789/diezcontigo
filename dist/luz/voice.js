@@ -1,6 +1,6 @@
-import {el,append,button,link} from './dom.js';
-import {prepareMP3} from './mp3.js';
-import {orbMotionNotice} from '../orb-motion.js';
+import {el,append,button,link} from './dom.js?v=0.15.4';
+import {prepareMP3} from './mp3.js?v=0.15.4';
+import {orbMotionNotice} from '../orb-motion.js?v=0.15.4';
 const TYPES=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4;codecs=mp4a.40.2','audio/mp4'];
 export function extensionFor(type){const base=type.toLowerCase().split(';')[0].trim();return({'audio/webm':'webm','audio/ogg':'ogg','audio/mp4':'m4a','audio/aac':'aac','audio/wav':'wav','audio/x-wav':'wav'})[base]||null;}
 export function recorderOptions(Recorder){return TYPES.filter(type=>Recorder.isTypeSupported?.(type)).map(mimeType=>({mimeType,audioBitsPerSecond:24000})).concat([{audioBitsPerSecond:24000},{}]);}
@@ -8,7 +8,7 @@ export function mountVoice(parent,{announce}){
  let disposed=false,epoch=0,stream=null,captureStream=null,recorder=null,context=null,analyser=null,raf=0,timer=0,chunks=[],bytes=0,blob=null,rawRecording=null,conversion=null,url=null,startAt=0,stopAt=0,mode='ready',interruption='',downloadTimer=0,pendingDownloadURL=null;
  let waveform=null,voiceEnvelope=0,voiceFrameAt=0;
  const root=el('section',null,{class:'lz-voice','data-state':'ready','aria-label':'Suelta tu voz'}),label=el('p','LUZ · TU MOMENTO',{class:'lz-kicker'}),heading=el('h1','Suelta tu voz',{id:'view-title',tabindex:-1}),subtitle=el('p','Un espacio para expresarte sin miedo.',{class:'lz-voice-subtitle'}),orb=el('div',null,{class:'lz-voice-orb','aria-hidden':'true'}),status=el('p','Puedes comenzar cuando quieras.',{role:'status',class:'lz-voice-status'}),time=el('p','00:00',{class:'lz-voice-time',role:'timer','aria-label':'Tiempo de grabación'}),controls=el('div',null,{class:'lz-voice-controls'}),preview=el('div',null,{class:'lz-preview'}),format=el('p','',{class:'lz-record-info'}),privacy=el('p','La grabación se realiza en tu dispositivo. DIEZ no analiza lo que dices ni envía el audio a servidores. Tú decides si lo guardas o lo borras. Si sales sin descargarlo, se descarta.',{class:'lz-privacy'}),back=link('Volver a Luz','selector',{class:'lz-button lz-secondary'});
- append(root,label,heading,subtitle,orb,status,time,preview,controls,format,privacy,back);parent.append(root);
+ append(root,label,heading,subtitle,controls,status,time,orb,preview,format,privacy,back);parent.append(root);
  orb.after(orbMotionNotice());
  const start=button('Comenzar a grabar',begin,{class:'lz-button',id:'luz-voice-start'}),stop=button('■ Detener grabación',()=>finish(),{class:'lz-button lz-stop',id:'luz-voice-stop'}),save=button('Guardar en mi dispositivo',download,{class:'lz-button lz-save',id:'luz-voice-save'}),erase=button('Borrar',()=>{releaseRecording();mode='deleted';paint('La grabación temporal se ha borrado.');},{class:'lz-button lz-delete',id:'luz-voice-delete'});
  const retry=button('Volver a preparar el MP3',()=>convert(epoch),{class:'lz-button',id:'luz-voice-retry'});
@@ -52,6 +52,17 @@ export function mountVoice(parent,{announce}){
  function download(){if(!blob||!url||mode!=='review'||blob.type!=='audio/mpeg')return;const a=el('a',null,{href:url,download:'DIEZ_Mi_voz_'+new Date().toISOString().replace(/[:.]/g,'-')+'.mp3'});document.body.append(a);a.click();a.remove();for(const audio of preview.querySelectorAll('audio')){audio.pause();audio.removeAttribute('src');audio.load();}preview.replaceChildren();blob=null;rawRecording=null;chunks=[];const completedURL=url;url=null;pendingDownloadURL=completedURL;downloadTimer=setTimeout(()=>{URL.revokeObjectURL(completedURL);pendingDownloadURL=null;},30000);mode='saved';paint('La descarga de tu MP3 se ha solicitado. DIEZ no conserva una copia de tu grabación.');}
  function background(){if(['recording','requesting','finishing','preparing'].includes(mode)){releaseRecording();mode='ready';paint('Se ha descartado la grabación al dejar esta pantalla. El micrófono está apagado.');}}
  const visibility=()=>{if(document.hidden)background();};const leave=()=>dispose();document.addEventListener('visibilitychange',visibility);window.addEventListener('pagehide',leave);
- function dispose(){if(disposed)return;disposed=true;releaseRecording();document.removeEventListener('visibilitychange',visibility);window.removeEventListener('pagehide',leave);}
- paint();return{dispose};
+ const hasPending=()=>!disposed&&['requesting','recording','finishing','preparing','conversion-error','review'].includes(mode);
+ let leaveDialog=null;
+ function confirmLeave(resume){
+  if(!hasPending())return true;
+  if(leaveDialog?.open)return false;
+  const dialog=el('dialog',null,{class:'voice-leave-dialog','aria-labelledby':'voice-leave-title','aria-describedby':'voice-leave-description'});
+  dialog.append(el('h2','¿Quieres salir y descartar la grabación?',{id:'voice-leave-title'}),el('p','La grabación temporal se borrará de esta sesión. Puedes seguir aquí para terminarla, escucharla o descargarla.',{id:'voice-leave-description'}));
+  const stay=button('Seguir aquí',()=>dialog.close(),{class:'lz-button'}),discard=button('Salir y descartar',()=>{dialog.close();dispose();resume();},{class:'lz-button lz-secondary'});
+  dialog.append(stay,discard);root.append(dialog);leaveDialog=dialog;
+  dialog.addEventListener('close',()=>{dialog.remove();if(leaveDialog===dialog)leaveDialog=null;});dialog.showModal();stay.focus();return false;
+ }
+ function dispose(){if(disposed)return;disposed=true;leaveDialog?.close();releaseRecording();document.removeEventListener('visibilitychange',visibility);window.removeEventListener('pagehide',leave);}
+ paint();return{dispose,confirmLeave,hasPending};
 }

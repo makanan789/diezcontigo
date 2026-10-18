@@ -1,4 +1,4 @@
-import { PATHS } from './content/paths.v0.1.js';
+import { PATHS } from './content/paths.v0.1.js?v=0.15.4';
 // This stack exists only in memory. It is not a history/progress product feature.
 export function startJourney(id) {
   if(!Object.hasOwn(PATHS,id))throw new Error('Este recorrido no está disponible.');

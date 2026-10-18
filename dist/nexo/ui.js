@@ -1,12 +1,14 @@
-import {freeResponse} from '../free-response.js';
-import {allowDraftChange} from '../draft-guard.js';
-import {nextStep} from '../next-step.js';
-import {renderWorldNotes} from '../world-notes.js';
-import {composeSelector} from '../selector-layout.js';
-import {registerAudio,icon as sharedIcon} from '../presentation.js';
-import {DATA} from './data.js';import * as model from './model.js';import * as notes from './notes-db.js';
+import {journeyOrientation,journeyEnding} from '../visit-guidance.js?v=0.15.4';
+import {imageAttributes,backgroundAsset} from '../responsive-media.js?v=0.15.4';
+import {freeResponse} from '../free-response.js?v=0.15.4';
+import {allowDraftChange} from '../draft-guard.js?v=0.15.4';
+import {nextStep} from '../next-step.js?v=0.15.4';
+import {renderWorldNotes} from '../world-notes.js?v=0.15.4';
+import {composeSelector} from '../selector-layout.js?v=0.15.4';
+import {registerAudio,icon as sharedIcon} from '../presentation.js?v=0.15.4';
+import {DATA} from './data.js?v=0.15.4';import * as model from './model.js?v=0.15.4';import * as notes from './notes-db.js?v=0.15.4';
 const scene=id=>DATA.scenes.find(s=>s.id===id),asset=file=>'./nexo/assets/'+file;
-const el=(tag,text,attrs={})=>{const e=document.createElement(tag);if(text!=null)e.textContent=text;for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e;};
+const el=(tag,text,attrs={})=>{if(tag==='img')attrs=imageAttributes(attrs);const e=document.createElement(tag);if(text!=null)e.textContent=text;for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e;};
 const append=(e,...children)=>{e.append(...children.filter(Boolean));return e;};
 const link=(label,path,attrs={})=>el('a',label,{href:'#nexo/'+path,'data-view':'nexo','data-path':path,...attrs});
 const external=(label,view,attrs={})=>el('a',label,{href:'#'+view,'data-view':view,...attrs});
@@ -32,25 +34,25 @@ export function createNexo({navigate,announce,rerender}){
  else title.append(append(el('p',null,{class:'nx-identity'}),icon('work'),sub));
  append(title,el('h1',text,{id:'view-title',tabindex:-1}));main.append(title);
  }
- function top(backTo){return append(el('nav',null,{class:'nx-top','aria-label':'Navegación de Nexo'}),(backTo==='inicio'?external('← Volver','inicio',{class:'nx-back'}):link('← Volver',backTo,{class:'nx-back'})),append(external('Aquí contigo','apoyo',{class:'nx-help'}),icon('people')),external('Inicio','inicio'));}
+ function top(backTo){return append(el('nav',null,{class:'nx-top','aria-label':'Navegación de Nexo'}),(backTo==='inicio'?external('← Volver','inicio',{class:'nx-back'}):link('← Volver',backTo,{class:'nx-back'})),external('Inicio','inicio'));}
  function notesCard(id){return append(link('','notas/'+id,{class:'nx-notes-card'}),append(el('span',null,{class:'nx-icon'}),icon('note')),append(el('div'),el('h2',DATA.notes.title),el('p',DATA.notes.description)),el('span','›',{'aria-hidden':true,class:'nx-arrow'}));}
  function cover(home=false){const s=scene('00'),e=el('section',null,{class:'nx-cover'+(home?' nx-home card door nexo':''),...(home?{'data-door':'nexo'}:{})});const art=el('div',null,{class:'nx-cover-art'});append(art,image(s,'background'),append(el('button',null,{type:'button',class:'nx-cover-character nx-interactive','aria-label':'Escuchar a Nexo','aria-pressed':false}),image(s,'character')));
- const body=append(el('div',null,{class:'nx-cover-body'}),el(home?'h2':'h1','NEXO',home?{}:{id:'view-title',tabindex:-1}),el('p','TRABAJO',{class:'nx-cover-kicker'}),el('span','',{class:'nx-gold','aria-hidden':true}),el('p',DATA.cover_description),link('→',home?'portada':'selector',{class:'nx-enter','aria-label':home?'Entrar en Nexo':'Explorar los escenarios de Nexo'}));append(e,art,body);e.append(audio(s,{figure:art.querySelector('.nx-cover-character'),home}));if(!home){const reading=el('details',null,{class:'presentation-reading'});append(reading,el('summary','Leer la presentación'),el('p',DATA.presentation));e.append(reading);}return e;}
+ const body=append(el('div',null,{class:'nx-cover-body'}),el(home?'h2':'h1','NEXO',home?{}:{id:'view-title',tabindex:-1}),el('p','TRABAJO',{class:'nx-cover-kicker'}),el('span','',{class:'nx-gold','aria-hidden':true}),el('p',DATA.cover_description),link('→','selector',{class:'nx-enter','aria-label':'Explorar Nexo'}));append(e,art,body);e.append(audio(s,{figure:art.querySelector('.nx-cover-character'),home}));if(!home){const reading=el('details',null,{class:'presentation-reading'});append(reading,el('summary','Leer la presentación'),el('p',DATA.presentation));e.append(reading);}return e;}
  function selector(main){const s=scene('00');const f=append(el('button',null,{type:'button',class:'nx-character nx-interactive','aria-label':'Escuchar a Nexo','aria-pressed':false}),image(s,'character'));const bubble=append(el('div'),el('p','Puedes entrar en cualquiera de estos lugares, sin completar otro antes.',{class:'am-intro',tabindex:0,role:'region','aria-label':'Orientación para elegir un lugar'}),audio(s,{figure:f}));
  main.append(composeSelector({world:'nexo',name:'Nexo',category:'TRABAJO',description:DATA.cover_description,background:asset(s.background),character:f,ornament:icon('work'),bubble,places:DATA.scenes.filter(s=>s.id!=='00').map((s,i)=>({id:s.id,title:s.title,image:asset(s.background),icon:icon(['list','people','clock','work','leaf'][i]),hook:'nx-place'})),notes:DATA.notes}));
  }
- function world(id){const s=scene(id),e=el('section',null,{class:'nx-world','data-scene':id});e.style.setProperty('--nx-background',`url('${new URL(asset(s.background),document.baseURI).href}')`);return e;}
+ function world(id){const s=scene(id),e=el('section',null,{class:'nx-world','data-scene':id});e.style.setProperty('--nx-background',`url('${new URL(backgroundAsset(asset(s.background)),document.baseURI).href}')`);return e;}
  function sceneView(main,id){const s=scene(id),e=world(id);e.append(top('selector'));heading(e,s.title);const figure=append(el('button',null,{type:'button',class:'nx-character nx-interactive','aria-label':'Escuchar a Nexo','aria-pressed':false}),image(s,'character'));const speech=append(el('div',null,{class:'nx-speech'}),el('div',s.intro,{class:'nx-speech-text',tabindex:0,role:'region','aria-label':'Texto de Nexo'}),audio(s,{figure}));const hero=append(el('div',null,{class:'nx-hero'}),figure,speech);const grid=el('div',null,{class:'nx-stories'});
  const icons=['list','gear','bars','leaf'];DATA.routes.filter(r=>r.scene===id).forEach((r,i)=>{const im=image(s,'background',{lazy:true,thumb:true});im.style.objectPosition=['30% 70%','65% 45%','70% 25%','15% 80%'][i];grid.append(append(link('','ruta/'+r.id,{class:'nx-card','data-story':r.id}),im,append(el('span',null,{class:'nx-icon'}),icons[i]==='bars'?sharedIcon('bars'):icon(icons[i])),append(el('div',null,{class:'nx-card-copy'}),el('h2',r.title),el('p',r.description)),el('span','›',{class:'nx-arrow','aria-hidden':true})));});append(e,hero,grid,notesCard(id));main.append(e);}
  function story(main,id){if(!state||state.id!==id)state=states.get(id)||model.start(id);states.set(id,state);const r=DATA.routes.find(r=>r.id===id),s=scene(r.scene),c=model.content(state);main.dataset.nexoPhase=state.phase;main.dataset.nexoRoute=id;const e=world(r.scene);heading(e,r.title,s.title);e.append(top('escena/'+r.scene));const t=state.phase==='entry'?r.entry:state.phase==='q1'?r.question:state.phase==='a1'?c.first.respuesta:state.phase==='q2'?c.first.segunda_pregunta:state.phase==='a2'?c.second.respuesta:r.close;
- const box=append(el('section',null,{class:'nx-dialogue','aria-label':'Recorrido de Nexo'}),el(state.phase.startsWith('q')?'h2':'p',t,{id:'nexo-words',class:'nx-words'}));const change=fn=>{if(!allowDraftChange())return;state=fn(state);states.set(id,state);rerender();};
+ const box=append(el('section',null,{class:'nx-dialogue','aria-label':'Recorrido de Nexo'}),el(state.phase.startsWith('q')?'h2':'p',t,{id:'nexo-words',class:'nx-words'}));if(state.phase==='entry')box.prepend(journeyOrientation());const change=fn=>{if(!allowDraftChange())return;state=fn(state);states.set(id,state);rerender();};
  if(state.phase==='q1'||state.phase==='q2'){const choices=state.phase==='q1'?r.branches:c.first.segundas_opciones;const options=el('div',null,{class:'nx-choices'});choices.forEach((o,i)=>options.append(button(o.text||o.texto,()=>change(x=>model.choose(x,i)),{'data-choice':i,class:'nx-choice'})));box.append(options);}
  if(state.phase==='q1'||state.phase==='q2')box.append(freeResponse({world:'nexo',scene:r.scene,question:t,store:notes,onDirty:fn=>dirty=fn,announce}));
  if(state.phase==='q1'||state.phase==='q2')box.append(button('Ninguna encaja: volver al lugar',()=>navigate('nexo','escena/'+r.scene),{class:'choice-skip secondary','data-choice-skip':'true'}));
  if(['entry','a1','a2'].includes(state.phase))box.append(button(state.phase==='entry'?'Comenzar':state.phase==='a2'?'Ver el cierre':'Continuar',()=>change(model.advance),{id:'nexo-continue'}));
  if(['a2','close'].includes(state.phase))box.append(nextStep({world:'nexo',route:r.id,title:r.title,scene:r.scene,first:c.first.texto,second:c.second.texto,navigate,onNote:text=>{pendingDraft=text;navigate('nexo','notas/'+r.scene);}}));
- box.append(button('← Volver',()=>state.phase==='entry'?navigate('nexo','escena/'+r.scene):change(model.back),{id:'nexo-back',class:'nx-secondary'}));
- if(state.phase==='close'){const actions=el('div',null,{class:'nx-end'});append(actions,link('Explorar otro lugar','selector'));box.append(actions);}box.append(external('Aquí contigo','apoyo',{class:'nx-inline-help'}));append(e,box);main.append(e);}
+ box.append(button(state.phase==='entry'?'Volver al lugar':'← Paso anterior',()=>state.phase==='entry'?navigate('nexo','escena/'+r.scene):change(model.back),{id:'nexo-back',class:'nx-secondary'}));
+ if(state.phase==='close')box.append(journeyEnding({world:'nexo',scene:r.scene,onNote:()=>{pendingDraft='';navigate('nexo','notas/'+r.scene);}}));append(e,box);main.append(e);}
  function notesView(main,id){main.append(top(noteReturn));const draft=pendingDraft;pendingDraft='';renderWorldNotes({main,world:'nexo',name:'Nexo',scene:model.SCENES.includes(id)?id:model.SCENES[0],scenes:DATA.scenes.filter(s=>s.id!=='00'),store:notes,navigate,announce,draft,onDirty:fn=>dirty=fn});}
 
  function render(main,path){generation++;dirty=()=>false;context=path||'portada';main.dataset.nexo='true';document.documentElement.removeAttribute('data-nexo-loading');const [kind,key]=context.split('/');if(kind==='portada'){append(main,top('inicio'),cover());return;}if(kind==='selector'){selector(main);return;}if(kind==='escena'&&model.SCENES.includes(key)){sceneView(main,key);return;}if(kind==='ruta'&&model.ROUTES.has(key)){story(main,key);return;}if(kind==='notas'){notesView(main,key);return;}heading(main,'Este lugar de Nexo no está disponible');main.append(link('Volver a Nexo','portada'));}

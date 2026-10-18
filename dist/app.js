@@ -1,22 +1,23 @@
-import {trackDraft,clearDraft} from './draft-guard.js';
-import {mountHomeInteractions} from './character-audio-hints.js';
-import {orbMotionEnabled,orbMotionNotice} from './orb-motion.js';
-import {icon as presentationIcon,registerAudio} from './presentation.js';
-import {createAlma} from './alma/ui.js';
-import {createLuz} from './luz/ui.js';
-import {renderLights,lightsEntry} from './lights/ui.js';
-import { PATHS,CONTENT_VERSION } from './content/paths.v0.1.js';
-import { SUPPORT } from './content/support.v0.1.js';
-import { STAGES } from './content/breathing.v0.1.js';
-import { ORIENTATION,CALM,TRUSTED_MESSAGE } from './content/here.v0.2.js';
-import { isMobileMessagesAvailable,messagesLink,copyDraft,shareDraft } from './trusted-person.js';
-import { startJourney,currentNode,choose,skip,back,validateContent } from './journey.js';
-import { newSession,transition,audioContract } from './breathing.js';
-import {createBreathingPlayer} from './breathing-player.js';
-import * as refuge from './refuge-db.js';
-import {createNova} from './nova/nova-ui.js';
-import {createNexo} from './nexo/ui.js';
-document.documentElement.dataset.diezRelease='0.8.6';
+import {trackDraft,clearDraft} from './draft-guard.js?v=0.15.4';
+import {mountHomeInteractions} from './character-audio-hints.js?v=0.15.4';
+import {orbMotionEnabled,orbMotionNotice} from './orb-motion.js?v=0.15.4';
+import {icon as presentationIcon,registerAudio} from './presentation.js?v=0.15.4';
+import {createAlma} from './alma/ui.js?v=0.15.4';
+import {createLuz} from './luz/ui.js?v=0.15.4';
+import {renderLights} from './lights/ui.js?v=0.15.4';
+import { PATHS,CONTENT_VERSION } from './content/paths.v0.1.js?v=0.15.4';
+import { SUPPORT } from './content/support.v0.1.js?v=0.15.4';
+import { STAGES } from './content/breathing.v0.1.js?v=0.15.4';
+import { ORIENTATION,CALM,TRUSTED_MESSAGE } from './content/here.v0.2.js?v=0.15.4';
+import { isMobileMessagesAvailable,messagesLink,copyDraft,shareDraft } from './trusted-person.js?v=0.15.4';
+import { startJourney,currentNode,choose,skip,back,validateContent } from './journey.js?v=0.15.4';
+import { newSession,transition,audioContract } from './breathing.js?v=0.15.4';
+import {createBreathingPlayer} from './breathing-player.js?v=0.15.4';
+import * as refuge from './refuge-db.js?v=0.15.4';
+import {createNova} from './nova/nova-ui.js?v=0.15.4';
+import {createNexo} from './nexo/ui.js?v=0.15.4';
+import {createBackup,parseBackup,restoreBackup,backupCounts,backupFile} from './local-backup.js?v=0.15.4';
+document.documentElement.dataset.diezRelease='0.15.4';
 const main=document.querySelector('#main');const live=document.querySelector('#announcement');
 const views=new Set(['inicio','diez','recorrido','apoyo','refugio','ajustes','respira','orientacion','calma','externa','confianza','nova','nexo','alma','luz','luces']);
 let view='inicio',pathId=null,journey=null,breathing=newSession(),orbTime=0,breathingStarted=false,helpReturn={view:'inicio'};
@@ -32,6 +33,8 @@ function startBreathingAudio(repeat=false){breathingPlayer.play(breathing.stage,
 window.addEventListener('pagehide',()=>haltBreathingAudio(false));
 window.addEventListener('pageshow',()=>{if(view==='respira'||(view==='luz'&&pathId==='voz'))render();});
 let homeInteractionsCleanup=null;
+// Session-only navigation. It contains routes, never notes or user text.
+let routeReady=false;const routeTrail=[];
 let lightsCleanup=null;let refugeDirty=()=>false;let renderId=0,editId=null,busy=false,orientationChoice=null,calmStep=0;
 const nova=createNova({navigate,announce,rerender:()=>render()});
 const nexo=createNexo({navigate,announce,rerender:()=>render()});
@@ -59,7 +62,8 @@ systemMotion.addEventListener('change',()=>{applySettings();if(view==='ajustes')
 window.addEventListener('diez-enable-orb-motion',()=>{settings.orbMotion='enabled';persistSettings();announce('Movimiento de los orbes activado en este navegador.');});
 for(const b of document.querySelectorAll('[data-theme-shortcut]')){b.append(presentationIcon(b.dataset.themeShortcut==='amanecer'?'sun':'moon'));b.addEventListener('click',()=>{settings.theme=b.dataset.themeShortcut;persistSettings();if(view==='ajustes'){for(const theme of ['amanecer','refugio']){const control=document.querySelector('#theme-'+theme);if(control){control.classList.toggle('secondary',theme!==settings.theme);control.setAttribute('aria-pressed',String(theme===settings.theme));}}}announce('Tema '+(settings.theme==='amanecer'?'Amanecer':'Refugio')+' activado.');});}
 applySettings();
-function navigate(next,context=null,{restore=false,writeUrl=true}={}) {
+function navigate(next,context=null,{restore=false,writeUrl=true,returning=false}={}) {
+  if(!luz.allowNavigation(()=>{if(!writeUrl)history.replaceState(null,'','#'+next+(context?'/'+context:''));navigate(next,context,{restore,writeUrl,returning});})){if(!writeUrl)history.replaceState(null,'','#'+view+(pathId?'/'+pathId:''));return;}
   if(refugeDirty()&&!confirm('Hay una idea sin guardar. ¿Quieres descartarla y salir?')){if(!writeUrl)history.replaceState(null,'','#'+view+(pathId?'/'+pathId:''));return;}
   if(!nexo.beforeNavigate(next,context,{restore})){if(!writeUrl)history.replaceState(null,'','#'+view+(pathId?'/'+pathId:''));return;}
   if(!nova.beforeNavigate(next,context,{restore})){if(!writeUrl)history.replaceState(null,'','#'+view+(pathId?'/'+pathId:''));return;}
@@ -70,7 +74,7 @@ function navigate(next,context=null,{restore=false,writeUrl=true}={}) {
   if(next==='recorrido'&&context==='nexo'){next='nexo';context='portada';if(!writeUrl)history.replaceState(null,'','#nexo/portada');}
   if(next==='recorrido'&&context==='nova'){next='nova';context='selector';if(!writeUrl)history.replaceState(null,'','#nova/selector');}
   if(!views.has(next))next='inicio';
-  if(next==='apoyo'&&view!=='apoyo')helpReturn={view,pathId};
+  if(next==='apoyo'&&view!=='apoyo'&&!returning)helpReturn={view,pathId};
   if(view==='respira'&&next!=='respira'){haltBreathingAudio();breathingAudioMessage='';breathing=transition(breathing,'stop');orbTime=0;}
   if(next==='inicio')journey=null;
   if(next==='recorrido') {
@@ -80,20 +84,54 @@ function navigate(next,context=null,{restore=false,writeUrl=true}={}) {
   if(next==='respira'&&view!=='respira'){haltBreathingAudio();breathingPlayer.reset();breathingAudioMessage='';breathing=newSession();orbTime=0;breathingStarted=false;}
   if(next==='orientacion'&&view!=='orientacion'&&!restore)orientationChoice=null;
   if(next==='calma'&&view!=='calma'&&!restore)calmStep=0;
-  view=next;pathId=context;
+  if(routeReady&&(view!==next||pathId!==context)){
+    const previous=routeTrail.findLastIndex(r=>r.view===next&&r.pathId===context);
+    if((returning||!writeUrl)&&previous>=0)routeTrail.splice(previous);
+    else if(!returning){routeTrail.push({view,pathId});if(routeTrail.length>80)routeTrail.shift();}
+  }
+  view=next;pathId=context;routeReady=true;
   if(writeUrl)history.pushState(null,'','#'+view+((view==='recorrido'||view==='nova'||view==='nexo'||view==='alma'||view==='luz'||view==='luces')&&pathId?'/'+pathId:''));
   render();
+}
+function goBack(){
+  if(view==='calma'&&calmStep>0){calmStep--;render();return;}
+  if(view==='orientacion'&&orientationChoice){orientationChoice=null;render();return;}
+  if(view==='recorrido'&&journey?.stack.length>1){journey=back(journey);render();return;}
+  if(view==='respira'&&breathing.stage>0){haltBreathingAudio();breathingAudioMessage='';breathing={stage:breathing.stage-1,playback:'stopped'};orbTime=0;render();return;}
+  const phase=main.dataset[view+'Phase'],internal=document.getElementById(view+'-back');
+  if(phase&&phase!=='entry'&&internal){internal.click();return;}
+  const parent=[...main.querySelectorAll('nav a[data-view]')].find(a=>a.textContent.trim()==='← Volver');
+  const fallback={view:'inicio',pathId:null};
+  if(parent&&(parent.dataset.view!==view||(parent.dataset.path||null)!==pathId)){fallback.view=parent.dataset.view;fallback.pathId=parent.dataset.path||null;}
+  else if(['calma','orientacion','externa'].includes(view))fallback.view='apoyo';
+  else if(view==='confianza')fallback.view='externa';
+  else if(view==='luces'&&pathId){fallback.view='luces';}
+  else if(['nova','nexo','alma','luz'].includes(view)&&pathId!=='portada'){fallback.view=view;fallback.pathId='selector';}
+  const target=routeTrail.at(-1)||fallback;
+  navigate(target.view,target.pathId,{restore:true,returning:true});
+}
+function exitApplication(){
+  if(refugeDirty()&&!confirm('Hay una idea sin guardar. ¿Quieres descartarla y salir?'))return;
+  if(!nexo.beforeNavigate('salir',null))return;
+  if(!nova.beforeNavigate('salir',null))return;
+  if(!alma.beforeNavigate('salir',null))return;
+  if(!luz.beforeNavigate('salir',null))return;
+  window.close();
+  if(!window.closed)window.location.assign('about:blank');
 }
 function readRoute(){if(location.hash==='#main'){main.focus();return;}const parts=location.hash.slice(1).split('/');const candidate=parts.shift();const context=parts.join('/')||null;navigate(views.has(candidate)?candidate:'inicio',context,{restore:true,writeUrl:false});}
 window.addEventListener('popstate',readRoute);
 document.addEventListener('click',event=>{
   if(event.target.closest('.skip-link')){event.preventDefault();main.focus();return;}
+  const exit=event.target.closest('a[data-exit]');
+  if(exit){if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();if(luz.allowNavigation(exitApplication))exitApplication();return;}
   const a=event.target.closest('a[data-view]');if(!a||event.defaultPrevented||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-  event.preventDefault();navigate(a.dataset.view,a.dataset.path||null);
+  event.preventDefault();if(a.dataset.back==='true')goBack();else navigate(a.dataset.view,a.dataset.path||null,{returning:a.dataset.returning==='true'});
 });
 function render(){
   homeInteractionsCleanup?.();homeInteractionsCleanup=null;
   const token=++renderId;lightsCleanup?.();lightsCleanup=null;clearDraft();refugeDirty=()=>false;main.replaceChildren();main.dataset.home=String(view==='inicio');delete main.dataset.node;delete main.dataset.contentVersion;delete main.dataset.simpleWorld;delete main.dataset.luz;delete main.dataset.luzRoute;delete main.dataset.luzPhase;delete main.dataset.alma;delete main.dataset.almaPhase;delete main.dataset.almaRoute;delete main.dataset.nexo;delete main.dataset.nexoPhase;delete main.dataset.nexoRoute;delete main.dataset.nova;delete main.dataset.novaRoute;delete main.dataset.novaPhase;main.classList.remove('nova-cover-view');editId=null;busy=false;
+  main.dataset.view=view;delete main.dataset.lights;
   if(view==='inicio')renderHome();
   if(view==='diez')renderAbout();
   if(view==='recorrido')renderJourney();
@@ -110,15 +148,17 @@ function render(){
   if(view==='alma')alma.render(main,pathId);
   if(view==='luz')luz.render(main,pathId);
   if(view==='luces')lightsCleanup=renderLights(main,pathId,{onDirty:check=>refugeDirty=check,announce});
+  if(!['inicio','nova','nexo','alma','luz','luces'].includes(view))main.prepend(append(el('nav',null,{class:'page-back','aria-label':'Volver a la pantalla anterior'}),button('← Volver',goBack,{secondary:true})));
+  for(const a of main.querySelectorAll('nav a[data-view]'))if(a.textContent.trim()==='← Volver')a.dataset.back='true';
   homeInteractionsCleanup=mountHomeInteractions(main);
-  document.title=(view==='inicio'?'DIEZ':document.querySelector('#view-title').textContent+' · DIEZ')+' · V0.2';
+  document.title=view==='inicio'?'Un lugar para volver a ti':document.querySelector('#view-title').textContent+' · DIEZ';
   document.querySelector('#view-title')?.focus({preventScroll:true});
   window.scrollTo(0,0);
   for(const a of document.querySelectorAll('header [data-view]')){if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
 }
 function renderHome(){
   const hero=el('section',null,{class:'hero'});
-  append(hero,el('span','DEMOSTRACIÓN V0.2',{class:'demo-tag'}),el('h1','Un lugar para volver a ti.',{tabindex:'-1',id:'view-title'}),el('p','Cuatro puertas. Un mismo lugar. Tú.'));
+  append(hero,el('h1','Un lugar para volver a ti.',{tabindex:'-1',id:'view-title'}),el('p','Cuatro puertas. Un mismo lugar. Tú.',{class:'home-purpose'}),el('p','Un espacio para personas adultas donde explorar lo que te ocurre, escribir para ti o hacer una pausa.',{class:'home-description'}));
   const grid=el('div',null,{class:'grid','aria-label':'Cuatro puertas'});
   const descriptions={nova:'Un espacio para conversar y elegir un límite.',nexo:'Un paso concreto, a tu ritmo.',alma:'Un espacio para lo que compartes.',luz:"Un espacio para mirarte con cariño, escuchar tu interior y volver a encontrarte."};
   for(const [id,path] of Object.entries(PATHS)){
@@ -131,28 +171,37 @@ function renderHome(){
     append(card,portrait,append(el('div',null,{class:'door-body'}),el('h2',path.name),el('span',path.context,{class:'context'}),el('p',descriptions[id],{class:'door-description'}),el('span','→',{class:'door-arrow','aria-hidden':'true'})));grid.append(card);
   }
   const extras=el('div',null,{class:'home-extras'});
-  append(extras,append(el('section',null,{class:'card breathing-card'}),el('div',null,{class:'mini-orb','aria-hidden':'true'}),append(el('div'),el('h2','Respira conmigo'),el('p','Un momento para ti.')),link('Comenzar','respira',null,{class:'button','aria-label':'Comenzar Respira conmigo'})));
-  for(const [next,heading,description,icon] of [['refugio','Tu refugio','Guarda y vuelve a tus ideas.','◇'],['apoyo','Aquí contigo','Un espacio para encontrar apoyo.','♡']]){
-    const card=link('',next,null,{class:'card home-link'});const orb=append(el('span',null,{class:'utility-orb '+(next==='refugio'?'refuge-orb':'support-orb'),'aria-hidden':'true'}),presentationIcon(next==='refugio'?'note':'people'));append(card,orb,append(el('div'),el('h2',heading),el('p',description)),el('span','→',{class:'chevron','aria-hidden':'true'}));extras.append(card);
+  const breathingCard=link('','respira',null,{class:'card home-tool home-breathing','aria-label':'Abrir Respira conmigo'});
+  append(breathingCard,el('h2','Respira conmigo'),el('span',null,{class:'mini-orb','aria-hidden':'true'}));extras.append(breathingCard);
+  const voiceCard=link('','luz','voz',{class:'card home-tool home-voice','aria-label':'Abrir Suelta tu voz'});append(voiceCard,el('h2','Suelta tu voz'),el('span',null,{class:'lz-mini-orb','aria-hidden':'true'}));extras.append(voiceCard);
+  const lightsCard=link('','luces',null,{class:'card home-tool home-lights','aria-label':'Abrir Diez pequeñas luces'});append(lightsCard,el('h2','Diez pequeñas luces'),el('span',null,{class:'lights-mini-orb','aria-hidden':'true'}));extras.append(lightsCard);
+  const secondary=el('div',null,{class:'home-secondary','aria-label':'Más espacios de DIEZ'});
+  for(const [next,heading,description,icon,orbClass] of [['refugio','Tu refugio','Guarda y vuelve a tus ideas.','note','refuge-orb'],['apoyo','Aquí contigo','Un espacio para encontrar apoyo.','people','support-orb']]){
+    const card=link('',next,null,{class:'card home-link'+(next==='apoyo'?' support-link':'')});const orb=append(el('span',null,{class:'utility-orb '+orbClass,'aria-hidden':'true'}),presentationIcon(icon));append(card,orb,append(el('div'),el('h2',heading),el('p',description)));secondary.append(card);
   }
   const guide=append(el('section',null,{class:'home-guide','aria-label':'Conoce DIEZ'}),append(el('div'),el('h2','¿Es tu primera visita?'),el('p','Conoce los personajes, las herramientas y cómo usar este espacio.')),link('¿Qué es DIEZ?','diez',null,{class:'button secondary'}));
-  append(main,hero,guide,append(el('div',null,{class:'home-layout'}),grid,extras),lightsEntry(),el('p','Elige a tu ritmo. Puedes salir o acudir directamente a ayuda externa cuando lo necesites.',{class:'note'}));
+  append(main,hero,guide,append(el('div',null,{class:'home-layout'}),grid,extras),secondary,el('p','Elige a tu ritmo. Puedes salir o acudir directamente a ayuda externa cuando lo necesites.',{class:'note'}));
 }
 function renderAbout(){
   title('¿Qué es DIEZ?','Conoce este espacio');
-  main.append(el('p','DIEZ es un espacio de acompañamiento general para personas adultas. Puedes explorar lo que te ocurre mediante historias, escuchar a sus personajes, escribir para ti o hacer una pausa.',{class:'lead'}));
+  main.append(el('p','DIEZ es un espacio de acompañamiento general para personas adultas. Puedes explorar lo que te ocurre mediante historias, escuchar a sus personajes, escribir para ti, guardar frases o hacer una pausa. Elige por dónde empezar y utiliza solo lo que te sirva.',{class:'lead'}));
   const section=(heading,text)=>append(el('section',null,{class:'panel diez-guide-section'}),el('h2',heading),el('p',text));
-  main.append(section('Cuatro personajes, cuatro puertas','Nova acompaña situaciones de relaciones; Nexo, del trabajo; Alma, de la familia; y Luz, de la vida personal. Puedes empezar por el que te apetezca y cambiar cuando quieras.'));
-  const how=section('Cómo empezar','Toca la imagen de un personaje o su botón Escuchar para oír su presentación. La flecha de su tarjeta permite entrar en su mundo.');
+  main.append(section('Cuatro personajes, cuatro puertas','Nova acompaña situaciones de relaciones; Nexo, del trabajo; Alma, de la familia; y Luz, de la vida personal. Cada uno tiene su forma de hablar y su mundo. Puedes entrar por cualquiera, explorar sus lugares y cambiar de personaje cuando quieras.'));
+  const how=section('Cómo empezar','Toca la imagen de un personaje o el icono de altavoz para oír su presentación. La flecha de su tarjeta permite entrar directamente en sus lugares.');
   const steps=el('ol');
-  for(const text of ['Elige un lugar y una historia que se acerquen a tu momento.','Lee las opciones y elige solo si alguna encaja contigo. También puedes escribir con tus palabras y guardar tu reflexión en las notas del personaje.','Puedes volver, cambiar de lugar o salir. No hay respuestas correctas ni obligación de terminar.'])steps.append(el('li',text));
+  for(const text of ['Dentro de cada personaje puedes elegir un lugar y seguir una conversación escrita y preparada de antemano.','Lee las opciones y elige solo si alguna encaja contigo. También puedes escribir con tus palabras y guardar tu reflexión en las notas de ese personaje.','Puedes volver, cambiar de lugar o salir en cualquier momento. No hay respuestas correctas ni obligación de terminar.'])steps.append(el('li',text));
   how.append(steps);main.append(how);
-  const tools=section('Otras formas de acompañarte','Respira conmigo ofrece tres etapas de audio con un orbe visual. Suelta tu voz, dentro de Luz, permite grabar, escuchar y descargar tu voz. Diez pequeñas luces reúne lecturas y un baúl donde puedes guardar tus propias frases.');
-  tools.append(link('Conocer Tu refugio','refugio',null,{class:'button secondary'}));main.append(tools);
+  const tools=section('Herramientas para cuando te apetezca','Respira conmigo ofrece tres etapas de audio. Puedes empezar, parar o cambiar de etapa; no utiliza el micrófono. Suelta tu voz te permite grabarte, escuchar la grabación y descargarla si quieres. La grabación empieza cuando pulsas Comenzar a grabar. Las dos herramientas tienen acceso directo en Inicio.');
+  tools.append(actions(link('Respira conmigo','respira',null,{class:'button secondary'}),link('Suelta tu voz','luz','voz',{class:'button secondary'})));
+  main.append(tools);
+  const readings=section('Diez pequeñas luces','Diez pequeñas luces reúne diez historias protagonizadas por Nova, Nexo, Alma y Luz. Muestran otros momentos de sus vidas, sus dudas y sus formas de acompañarse. Puedes abrir cualquiera, leerla a tu ritmo y guardar su frase original en la Caja de las emociones. En el baúl también puedes escribir tus propias frases.');
+  readings.append(link('Elegir una historia','luces',null,{class:'button secondary'}));main.append(readings);
+  main.append(section('Tu refugio y tus cosas guardadas','Tu refugio reúne las ideas breves que escribas, el acceso a las notas de cada personaje y las frases del baúl. Aquí contigo está disponible en la navegación principal para consultar opciones de apoyo y ayuda externa.'));
+  main.append(section('Ajustes','Puedes elegir el tema visual, cambiar el tamaño del texto y ajustar el movimiento general y de los orbes.'));
   main.append(section('Qué puedes esperar','Los relatos y sus continuaciones están preparados de antemano. Las opciones muestran distintos caminos; DIEZ no interpreta lo que escribes ni genera respuestas personalizadas. El orbe de voz reacciona al volumen del sonido, sin interpretar las palabras ni evaluar emociones.'));
   const limits=section('Qué no ofrece DIEZ','DIEZ no diagnostica, no ofrece terapia ni sustituye la atención profesional. Tampoco hay una persona atendiendo en directo ni se reciben avisos. En Aquí contigo puedes encontrar opciones de apoyo y acceso a ayuda externa.');
   limits.append(link('Ir a Aquí contigo','apoyo',null,{class:'button secondary'}));main.append(limits);
-  main.append(section('Tus textos y grabaciones','Las ideas, notas y frases que decides guardar se conservan en ese navegador y dispositivo, sin cuenta ni copia remota. Pueden perderse al borrar sus datos y no se trasladan a otro navegador. Si compartes el dispositivo, otras personas con acceso podrían leerlas. Las grabaciones de Suelta tu voz permanecen en la sesión hasta que las descargas o las descartas.'));
+  main.append(section('Esta demostración y tus datos','Esta es una versión de demostración para el concurso. Las ideas, las notas de los personajes y las frases que guardas se conservan en este navegador y dispositivo, sin cuenta ni copia remota. En Ajustes puedes preparar un archivo de copia y recuperarlo después; el archivo incluye tus textos y debes guardarlo en un lugar privado. Las grabaciones de Suelta tu voz se descargan por separado. Para probar la aplicación, utiliza ejemplos ficticios sin información sensible.'));
   main.append(actions(link('Elegir un personaje','inicio',null,{class:'button'})));
 }
 function renderJourney(){
@@ -170,7 +219,7 @@ function renderJourney(){
       catch(error){b.disabled=false;announce(error.message);}
     },{id:'save-suggestion'}));
   }
-  main.append(actions(button('Atrás',()=>{journey=back(journey);render();},{secondary:true,id:'journey-back',disabled:journey.stack.length===1}),node.skip?button('Omitir esta pregunta',()=>{journey=skip(journey);render();},{secondary:true,id:'journey-skip'}):null,button('Salir y volver a Inicio',()=>navigate('inicio'),{secondary:true,id:'journey-exit'})));
+  main.append(actions(button('Atrás',goBack,{secondary:true,id:'journey-back'}),node.skip?button('Omitir esta pregunta',()=>{journey=skip(journey);render();},{secondary:true,id:'journey-skip'}):null,button('Salir y volver a Inicio',()=>navigate('inicio'),{secondary:true,id:'journey-exit'})));
   main.append(el('p','Las elecciones se usan solo para mostrar este recorrido. No se guardan como historial ni se evalúa cómo te sientes.',{class:'note'}));
 }
 function pathCard(next,heading,description,icon,kind){
@@ -196,7 +245,7 @@ function renderCalm(){
   const step=CALM[calmStep];title('Necesito recuperar la calma','Una pausa breve y voluntaria');
   main.append(append(el('section',null,{class:'panel calm-panel'}),el('h2',step.title,{id:'calm-stage'}),el('p',step.text,{class:'lead'})));
   const change=next=>{calmStep=Math.max(0,Math.min(CALM.length-1,next));render();};
-  append(main,actions(button('Atrás',()=>change(calmStep-1),{secondary:true,id:'calm-back',disabled:calmStep===0}),calmStep<CALM.length-1?button('Continuar',()=>change(calmStep+1),{id:'calm-next'}):button('Repetir la pausa',()=>change(0),{id:'calm-repeat'}),calmStep<CALM.length-1?button('Omitir este momento',()=>change(calmStep+1),{secondary:true,id:'calm-skip'}):null),actions(link('Hablar con mi persona de confianza','confianza',null,{class:'button secondary'}),button('Detener y volver a Aquí contigo',()=>navigate('apoyo'),{secondary:true,id:'calm-stop'}),link('Salir a Inicio','inicio',null,{class:'button secondary'})),el('p','No se evalúa cómo te sientes ni se exige completar una cantidad de pasos.',{class:'note'}));
+  append(main,actions(button('Atrás',goBack,{secondary:true,id:'calm-back'}),calmStep<CALM.length-1?button('Continuar',()=>change(calmStep+1),{id:'calm-next'}):button('Repetir la pausa',()=>change(0),{id:'calm-repeat'}),calmStep<CALM.length-1?button('Omitir este momento',()=>change(calmStep+1),{secondary:true,id:'calm-skip'}):null),actions(link('Hablar con mi persona de confianza','confianza',null,{class:'button secondary'}),button('Detener y volver a Aquí contigo',()=>navigate('apoyo'),{secondary:true,id:'calm-stop'}),link('Salir a Inicio','inicio',null,{class:'button secondary'})),el('p','No se evalúa cómo te sientes ni se exige completar una cantidad de pasos.',{class:'note'}));
 }
 function renderExternal(){
   title('Necesito ayuda externa','Contacto externo · España');
@@ -223,9 +272,9 @@ function renderTrusted(){
 }
 function renderRefuge(token){
   title('Tu refugio','Tus ideas y el acceso a tus notas');
-  main.append(el('p','Aquí puedes guardar una idea breve para volver a leerla después. También encontrarás el acceso a las notas que has escrito con cada personaje.',{class:'lead'}));
+  main.append(el('p','Aquí puedes guardar una idea breve y encontrar el acceso a lo que has elegido conservar en DIEZ.',{class:'lead'}));
   const guide=append(el('section',null,{class:'panel refuge-guide','aria-labelledby':'refuge-guide-title'}),el('h2','Cómo usar Tu refugio',{id:'refuge-guide-title'}));
-  const steps=el('ol');for(const text of ['Escribe una idea y pulsa Guardar idea.','Vuelve a Tu refugio desde la barra principal: tus ideas aparecerán debajo del formulario.','Para recuperar una reflexión de un recorrido, abre Notas de Nova, Nexo, Alma o Luz al final de esta página.'])steps.append(el('li',text));guide.append(steps);main.append(guide);
+  const steps=el('ol');for(const text of ['Escribe una idea y pulsa Guardar idea.','Vuelve a Tu refugio desde la barra principal: tus ideas aparecerán debajo del formulario.','Para recuperar una reflexión de un recorrido, abre Notas de Nova, Nexo, Alma o Luz al final de esta página.'])steps.append(el('li',text));guide.append(steps,el('p','Tus notas están en el cuaderno de cada personaje; tus frases, en el baúl. Las grabaciones que descargas se encuentran en tu dispositivo, fuera de DIEZ.'));main.append(guide,append(el('section',null,{class:'panel refuge-chest-access'}),el('h2','Mis frases del baúl'),el('p','Vuelve a las frases de las lecturas y a las que has escrito en la Caja de las emociones.'),link('Abrir mis frases del baúl','luces','baul',{class:'button secondary'})));
   main.append(el('p','Todo se guarda solo en este navegador y dispositivo. No hay cuenta, sincronización ni copia remota; borrar sus datos o usar una sesión privada puede hacer que pierdas lo guardado.',{class:'note'}));
   const privacy=el('details',null,{class:'notes-info'});privacy.append(el('summary','Sobre esta versión de prueba y tus datos'),el('p','Utiliza ejemplos ficticios. No incluyas nombres reales, teléfonos, direcciones, diagnósticos ni información sensible. Si compartes el dispositivo, otras personas con acceso al navegador podrían leer lo guardado.',{class:'note'}));main.append(privacy);
   main.append(el('h2','Tus ideas breves'));
@@ -237,9 +286,10 @@ function renderRefuge(token){
   const cancel=button('Cancelar edición',()=>{editId=null;input.value='';save.textContent='Guardar idea';cancel.hidden=true;input.focus();},{secondary:true,id:'refuge-cancel'});cancel.hidden=true;
   append(form,el('label','Idea breve',{for:'refuge-text'}),input,el('p','Hasta 300 caracteres. Escribe una acción general sin datos identificativos.',{id:'refuge-hint',class:'note'}),status,actions(save,cancel));
   const list=el('ul',null,{id:'refuge-items',class:'items','aria-label':'Ideas guardadas'});
-  const empty=el('p','Consultando tus ideas…',{id:'refuge-empty'});
+  const empty=el('p','Consultando tus ideas…',{id:'refuge-empty',class:'refuge-empty-state'});
   const reload=button('Consultar ideas',()=>refresh(),{secondary:true,id:'refuge-query'});
-  append(main,form,actions(reload),empty,list,el('h2','Notas de tus personajes'),el('p','Las reflexiones que guardas dentro de un personaje están en su cuaderno. Elige uno para consultarlas, editarlas o eliminarlas.',{class:'note'}),actions(link('Notas de Nova','nova','notas/todas',{class:'button secondary'}),link('Notas de Nexo','nexo','notas/todas',{class:'button secondary'}),link('Notas de Alma','alma','notas/todas',{class:'button secondary'}),link('Notas de Luz','luz','notas/todas',{class:'button secondary'})),actions(link('Volver a Inicio','inicio',null,{class:'button secondary'})));
+  const reloadActions=actions(reload);reloadActions.classList.add('refuge-query-actions');
+  append(main,form,reloadActions,empty,list,el('h2','Notas de tus personajes'),el('p','Las reflexiones que guardas dentro de un personaje están en su cuaderno. Elige uno para consultarlas, editarlas o eliminarlas.',{class:'note'}),actions(link('Notas de Nova','nova','notas/todas',{class:'button secondary'}),link('Notas de Nexo','nexo','notas/todas',{class:'button secondary'}),link('Notas de Alma','alma','notas/todas',{class:'button secondary'}),link('Notas de Luz','luz','notas/todas',{class:'button secondary'})),actions(link('Volver a Inicio','inicio',null,{class:'button secondary'})));
   function message(text,error=false){status.textContent=text;status.className=error?'message error':'message';input.setAttribute('aria-invalid',String(error));}
   function locked(value){busy=value;for(const b of main.querySelectorAll('button'))b.disabled=value;}
   async function refresh(){
@@ -263,21 +313,67 @@ function renderRefuge(token){
   refresh();
 }
 function renderSettings(){
-  title('Ajustes','Apariencia y accesibilidad');
-  const themes=el('div',null,{class:'theme-select','aria-label':'Tema visual'});
+  title('Ajustes','Tu espacio, a tu manera');
+  const section=(name)=>append(el('section',null,{class:'panel settings-section'}),el('h2',name));
+  const appearance=section('Apariencia'),themes=el('div',null,{class:'theme-select',role:'group','aria-label':'Tema visual','aria-describedby':'theme-help'});
   for(const theme of ['amanecer','refugio'])themes.append(button(theme==='amanecer'?'Amanecer':'Refugio',()=>{settings.theme=theme;persistSettings();render();announce('Tema '+theme+' activado.');},{secondary:settings.theme!==theme,id:'theme-'+theme}));
   for(const b of themes.children)b.setAttribute('aria-pressed',String(b.id==='theme-'+settings.theme));
-  append(main,el('h2','Tu espacio, a tu manera'),themes,el('p','Los temas solo cambian la apariencia.',{class:'note'}));
-  const size=el('select',null,{id:'text-size'});for(const [value,label] of [['1','Normal'],['1.15','Grande'],['1.3','Muy grande']])size.append(el('option',label,{value}));size.value=settings.size;
+  appearance.append(themes,el('p','Los temas solo cambian la apariencia.',{id:'theme-help',class:'note'}));
+  const text=section('Texto'),size=el('select',null,{id:'text-size'});for(const [value,label] of [['1','Normal'],['1.15','Grande'],['1.3','Muy grande']])size.append(el('option',label,{value}));size.value=settings.size;
   size.addEventListener('change',()=>{settings.size=size.value;persistSettings();announce('Tamaño de texto actualizado.');});
-  const reduce=el('input',null,{type:'checkbox',id:'reduce-motion'});reduce.checked=settings.reduce;
-  const orbMotion=el('select',null,{id:'orb-motion'});for(const[value,label]of [['system','Seguir los ajustes de movimiento'],['enabled','Activar movimiento de los orbes'],['disabled','Mantener los orbes quietos']])orbMotion.append(el('option',label,{value}));orbMotion.value=settings.orbMotion;
+  text.append(append(el('div',null,{class:'form-group'}),el('label','Tamaño del texto',{for:'text-size'}),size));
+  const movement=section('Movimiento'),reduce=el('input',null,{type:'checkbox',id:'reduce-motion','aria-describedby':'system-motion'});reduce.checked=settings.reduce;
+  const orbMotion=el('select',null,{id:'orb-motion','aria-describedby':'orb-motion-help'});for(const[value,label]of [['system','Seguir los ajustes de movimiento'],['enabled','Activar movimiento de los orbes'],['disabled','Mantener los orbes quietos']])orbMotion.append(el('option',label,{value}));orbMotion.value=settings.orbMotion;
   orbMotion.addEventListener('change',()=>{settings.orbMotion=orbMotion.value;persistSettings();announce('Movimiento de los orbes actualizado.');});
   reduce.addEventListener('change',()=>{settings.reduce=reduce.checked;persistSettings();announce(settings.reduce?'Movimiento reducido activado.':'Se respeta la preferencia de movimiento del sistema.');});
-  append(main,append(el('div',null,{class:'panel'}),append(el('div',null,{class:'form-group'}),el('label','Tamaño del texto',{for:'text-size'}),size),append(el('div',null,{class:'form-group'}),append(el('label',null,{for:'reduce-motion',class:'check-label'}),reduce,'Reducir movimiento'),el('p',systemMotion.matches?'Tu sistema solicita reducir el movimiento. Se respeta siempre.':'Tu sistema no solicita reducir el movimiento.',{id:'system-motion',class:'note'})),el('p',settingsPersist?'Estos ajustes se guardan localmente. No guardan tus recorridos.':'El navegador no permite guardar ajustes. Funcionan durante esta sesión.',{class:'note'})),actions(link('Volver a Inicio','inicio',null,{class:'button secondary'})));
-  const motionGroup=append(el('div',null,{class:'form-group'}),el('label','Movimiento de los orbes',{for:'orb-motion'}),orbMotion,el('p','Puedes activar solo los orbes sin cambiar los ajustes de tu dispositivo. El resto de animaciones sigue la preferencia general.',{class:'note'}));
-  document.querySelector('#reduce-motion').closest('.form-group').after(motionGroup);
-  if(systemMotion.matches)document.querySelector('#system-motion').textContent='Tu sistema solicita reducir el movimiento. Puedes elegir el movimiento de los orbes por separado.';
+  movement.append(append(el('div',null,{class:'form-group'}),append(el('label',null,{for:'reduce-motion',class:'check-label'}),reduce,'Reducir movimiento'),el('p',systemMotion.matches?'Tu sistema solicita reducir el movimiento. Puedes elegir el movimiento de los orbes por separado.':'Tu sistema no solicita reducir el movimiento.',{id:'system-motion',class:'note'})),append(el('div',null,{class:'form-group'}),el('label','Movimiento de los orbes',{for:'orb-motion'}),orbMotion,el('p','Puedes activar solo los orbes sin cambiar los ajustes de tu dispositivo. El resto de animaciones sigue la preferencia general.',{id:'orb-motion-help',class:'note'})));
+  const backup=section('Copia de tus notas y frases');
+  backup.append(el('p','La copia incluye tus ideas breves, las notas de Nova, Nexo, Alma y Luz, y las frases del baúl. Se descarga como un archivo JSON que puedes recuperar en otro navegador o dispositivo. Tus grabaciones se descargan por separado desde Suelta tu voz.',{class:'note'}));
+  backup.append(el('p','Al recuperar una copia, DIEZ añade las entradas que falten y conserva las que ya tienes. No reemplaza ni borra tus datos. El archivo contiene tus textos: guárdalo en un lugar privado.',{class:'note'}));
+  let currentBackup=null,downloadUrl=null;
+  const backupStatus=el('p','',{id:'backup-status',role:'status','aria-live':'polite',class:'message backup-status'});
+  const prepare=button('Preparar una copia',async()=>{
+    prepare.disabled=true;backupStatus.textContent='Preparando el archivo…';
+    try{
+      const data=await createBackup();const blob=backupFile(data);
+      if(downloadUrl)URL.revokeObjectURL(downloadUrl);
+      downloadUrl=URL.createObjectURL(blob);
+      const day=new Date().toISOString().slice(0,10);
+      download.href=downloadUrl;download.download='diez-copia-'+day+'.json';download.hidden=false;
+      backupStatus.textContent='La copia está preparada. Pulsa Descargar copia para guardarla en tu dispositivo.';download.focus();
+    }catch(error){backupStatus.textContent=error.message;}
+    finally{prepare.disabled=false;}
+  },{id:'backup-prepare'});
+  const download=el('a','Descargar copia',{class:'button secondary backup-download',hidden:true});
+  const picker=el('input',null,{type:'file',id:'backup-file',accept:'.json,application/json','aria-describedby':'backup-file-help backup-status'});
+  const pickerLabel=el('label','Elige una copia de DIEZ para recuperar',{for:'backup-file'});
+  const fileHelp=el('p','Antes de importar verás cuántas ideas, notas y frases contiene el archivo.',{id:'backup-file-help',class:'note'});
+  const restore=button('Recuperar esta copia',async()=>{
+    if(!currentBackup)return;
+    restore.disabled=true;backupStatus.textContent='Recuperando la copia…';
+    try{
+      const result=await restoreBackup(currentBackup);
+      backupStatus.textContent='Copia recuperada: '+result.imported+' entradas añadidas y '+result.skipped+' ya existentes conservadas.';
+      currentBackup=null;restore.hidden=true;preview.hidden=true;picker.value='';
+    }catch(error){
+      const partial=error.backupProgress;
+      backupStatus.textContent=partial?'La recuperación se interrumpió después de añadir '+partial.imported+' entradas. Puedes intentarlo de nuevo; las ya recuperadas se omitirán. '+error.message:error.message;
+    }finally{restore.disabled=false;}
+  },{secondary:true,id:'backup-restore'});restore.hidden=true;
+  const preview=el('p','',{id:'backup-preview',class:'note backup-preview',hidden:true});
+  picker.addEventListener('change',async()=>{
+    currentBackup=null;restore.hidden=true;preview.hidden=true;
+    const file=picker.files?.[0];if(!file)return;
+    try{
+      if(file.size>25_000_000)throw new Error('El archivo supera el tamaño permitido para una copia de DIEZ.');
+      currentBackup=parseBackup(await file.text());
+      const counts=backupCounts(currentBackup);
+      preview.textContent='Esta copia contiene '+counts.ideas+' ideas breves, '+counts.notes+' notas de personajes y '+counts.phrases+' frases del baúl.';
+      preview.hidden=false;restore.hidden=false;backupStatus.textContent='Revisa el contenido y pulsa Recuperar esta copia cuando quieras.';
+    }catch(error){backupStatus.textContent=error.message;}
+  });
+  backup.append(append(el('div',null,{class:'backup-actions'}),prepare,download),pickerLabel,picker,fileHelp,preview,restore,backupStatus);
+  main.append(appearance,text,movement,backup,el('p',settingsPersist?'Estos ajustes se guardan localmente. No guardan tus recorridos.':'El navegador no permite guardar ajustes. Funcionan durante esta sesión.',{class:'note settings-storage'}),actions(link('Volver a Inicio','inicio',null,{class:'button secondary'})));
 }
 function renderBreathing(){
   const stage=STAGES[breathing.stage];const audio=audioContract(stage);
@@ -310,7 +406,13 @@ function renderBreathing(){
     (target&&!target.disabled?target:document.getElementById('breathing-play'))?.focus({preventScroll:true});
     announce('Etapa '+(breathing.stage+1)+' de 3. '+stageStatus());
   };
-  append(panel,el('p',stageStatus(),{role:'status',id:'breathing-state',...(active&&!breathingAudioFailed?{class:'sr-only'}:{})}),actions(button(breathingAudioLoading?'Cargando…':breathing.playback==='playing'?'Pausar':breathing.playback==='paused'?'Continuar':'Comenzar',()=>control(breathing.playback==='playing'?'pause':'play'),{id:'breathing-play',disabled:breathingAudioLoading}),button('Reiniciar respiración',()=>control('restart'),{secondary:true,id:'breathing-reset'})),actions(button('Repetir esta etapa',()=>control('repeat'),{secondary:true,id:'breathing-repeat'}),breathing.stage<2?button('Siguiente etapa',()=>control('next'),{id:'breathing-next'}):null,button('Salir y volver a Inicio',()=>navigate('inicio'),{secondary:true,id:'breathing-exit'})));
+  const primary=actions(button(breathingAudioLoading?'Cargando…':breathing.playback==='playing'?'Pausar':breathing.playback==='paused'?'Continuar':'Comenzar',()=>control(breathing.playback==='playing'?'pause':'play'),{id:'breathing-play',disabled:breathingAudioLoading}));primary.classList.add('breathing-primary');
+  const stateMessage=el('p',stageStatus(),{role:'status',id:'breathing-state',...(active&&!breathingAudioFailed?{class:'sr-only'}:{})});
+  if(!active)panel.querySelector('#breathing-message').after(el('p','Pulsa Comenzar para escuchar el audio. El micrófono no se utiliza.',{class:'note'}),primary,stateMessage);else panel.prepend(primary,stateMessage);
+  const secondary=el('details',null,{class:'breathing-options'});secondary.open=active;secondary.append(el('summary','Elegir etapa y otras opciones'));
+  const stages=el('div',null,{class:'actions','aria-label':'Etapas disponibles libremente'});for(const [index,item] of STAGES.entries())stages.append(button(String(index+1)+' · '+item.title,()=>{haltBreathingAudio();breathingAudioMessage='';breathing={stage:index,playback:'stopped'};orbTime=0;breathingStarted=true;render();},{secondary:true,id:'breathing-stage-'+index}));secondary.append(stages);
+  if(active)secondary.append(actions(button('Repetir esta etapa',()=>control('repeat'),{secondary:true,id:'breathing-repeat'}),button('Reiniciar respiración',()=>control('restart'),{secondary:true,id:'breathing-reset'}),breathing.stage<2?button('Siguiente etapa',()=>control('next'),{secondary:true,id:'breathing-next'}):null));
+  panel.append(secondary);
   main.append(panel);
   const animation=orb.getAnimations()[0];if(animation)animation.currentTime=orbTime;
 }

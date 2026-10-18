@@ -1,4 +1,4 @@
-import {DATA} from './data.js';
+import {DATA} from './data.js?v=0.15.4';
 export const SCENES=new Map(DATA.scenes.map(s=>[s.id,s]));
 export const ROUTES=new Map(DATA.routes.map(r=>[r.id,r]));
 const PHASES=['entry','q1','a1','transition','q2','end'];

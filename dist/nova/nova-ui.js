@@ -1,17 +1,19 @@
-import {freeResponse} from '../free-response.js';
-import {allowDraftChange} from '../draft-guard.js';
-import {mediaAsset} from '../media-map.js';
-import {nextStep} from '../next-step.js';
-import {renderWorldNotes} from '../world-notes.js';
-import {composeSelector} from '../selector-layout.js';
-import {registerAudio,icon as sharedIcon} from '../presentation.js';
-import {NARRATIVE} from './narrativa.v1.js';
-import {AUDIO_TRACKS} from './audio.v1.js';
-import * as model from './model.js';
-import * as notes from './notes-db.js';
-const asset=name=>mediaAsset('nova',name);
+import {journeyOrientation,journeyEnding} from '../visit-guidance.js?v=0.15.4';
+import {imageAttributes,backgroundAsset} from '../responsive-media.js?v=0.15.4';
+import {freeResponse} from '../free-response.js?v=0.15.4';
+import {allowDraftChange} from '../draft-guard.js?v=0.15.4';
+import {mediaAsset} from '../media-map.js?v=0.15.4';
+import {nextStep} from '../next-step.js?v=0.15.4';
+import {renderWorldNotes} from '../world-notes.js?v=0.15.4';
+import {composeSelector} from '../selector-layout.js?v=0.15.4';
+import {registerAudio,icon as sharedIcon} from '../presentation.js?v=0.15.4';
+import {NARRATIVE} from './narrativa.v1.js?v=0.15.4';
+import {AUDIO_TRACKS} from './audio.v1.js?v=0.15.4';
+import * as model from './model.js?v=0.15.4';
+import * as notes from './notes-db.js?v=0.15.4';
+const asset=name=>backgroundAsset(mediaAsset('nova',name));
 const sceneTitle=id=>NARRATIVE.escenarios[id]?.titulo||'Nova';
-function el(tag,text,attrs={}){const e=document.createElement(tag);if(text!==null&&text!==undefined)e.textContent=text;for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e;}
+function el(tag,text,attrs={}){if(tag==='img')attrs=imageAttributes(attrs);const e=document.createElement(tag);if(text!==null&&text!==undefined)e.textContent=text;for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e;}
 function append(e,...children){e.append(...children.filter(Boolean));return e;}
 const group=(...e)=>append(el('div',null,{class:'actions'}),...e);
 function link(label,context,attrs={}){return el('a',label,{href:'#nova/'+context,'data-view':'nova','data-path':context,...attrs});}
@@ -46,12 +48,12 @@ export function createNova({navigate,announce,rerender}){
  }
  function figure(scene,{cover=false}={}){const file='NOVA_PERSONAJE_'+(cover?'PORTADA':scene)+'.png';const e=button('',()=>{}, {class:'nova-figure','aria-label':'Escuchar a Nova','aria-pressed':false});append(e,el('img',null,{src:asset(file),alt:'',class:scene==='03_RINCON'?'pose-rincon':scene==='01_JARDIN'?'pose-jardin':''}));e.querySelector('img').addEventListener('error',()=>announce('La ilustración de Nova no está disponible. Los textos y controles siguen funcionando.'));return e;}
  function cover(full=false){const card=el('section',null,{class:'nova-cover'+(full?' nova-cover-full':' nova-home card door nova'),...(full?{}:{'data-door':'nova'})});const art=el('div',null,{class:'nova-cover-art'});const f=figure('PORTADA',{cover:true});art.append(f);
-  const body=el('div',null,{class:'nova-cover-body'});append(body,el(full?'h1':'h2','NOVA',full?{id:'view-title',tabindex:'-1'}:{}),el('p','RELACIONES',{class:'nova-kicker'}),ornament(),el('p','Un espacio para conversar, sentir y elegir un límite.',{class:'nova-cover-description'}),link('→',full?'selector':'portada',{class:'nova-enter','aria-label':'Entrar en los escenarios de Nova'}));
+  const body=el('div',null,{class:'nova-cover-body'});append(body,el(full?'h1':'h2','NOVA',full?{id:'view-title',tabindex:'-1'}:{}),el('p','RELACIONES',{class:'nova-kicker'}),ornament(),el('p','Un espacio para conversar, sentir y elegir un límite.',{class:'nova-cover-description'}),link('→','selector',{class:'nova-enter','aria-label':'Explorar Nova'}));
   append(card,art,body,audioPanel('00_PRESENTACION',f,{home:!full,cover:full}));return card;
  }
  function top(target='inicio'){
  const back=target==='inicio'?baseLink('← Volver','inicio'):link('← Volver',target);
- back.className='nova-top-back';return append(el('nav',null,{class:'nova-top','aria-label':'Navegación de Nova'}),back,append(baseLink('Aquí contigo','apoyo'),sharedIcon('people')),baseLink('Inicio','inicio'));
+ back.className='nova-top-back';return append(el('nav',null,{class:'nova-top','aria-label':'Navegación de Nova'}),back,baseLink('Inicio','inicio'));
  }
  function nav(scene){return append(el('nav',null,{class:'nova-local-nav','aria-label':'Navegación de Nova'}),link('Portada','portada'),link('Explorar otro lugar','selector'),link('Mis notas personales','notas/'+(scene||'todas')),baseLink('Aquí contigo','apoyo'),baseLink('Inicio','inicio'));}
  function renderSelector(main){
@@ -63,7 +65,7 @@ export function createNova({navigate,announce,rerender}){
  const label=append(el('div',null,{class:'nova-scene-label'}),el('div','NOVA',{class:'world-brand'}),el('p','RELACIONES',{class:'world-category'}),ornament(),el('h1',sceneTitle(scene),{id:'view-title',tabindex:-1}));
  const hero=el('div',null,{class:'nova-scene-hero'});const f=figure(scene);append(hero,f,audioPanel(scene,f,{captionOpen:true,scene:true}));const grid=el('div',null,{class:'nova-stories'});const stories=NARRATIVE.recorridos.filter(r=>r.escenario===scene);if(scene==='03_RINCON')stories.push(NARRATIVE.tarjeta_navegacion);stories.forEach((r,i)=>grid.append(sceneCard(r,i)));
  const noteCard=link('', 'notas/'+scene,{class:'nova-notes-card'});append(noteCard,append(el('span',null,{class:'nova-notebook','aria-hidden':'true'}),sharedIcon('note')),append(el('div'),el('h2','Mis notas personales'),el('p','Escribe y guarda algo que quieras recordar.')),el('span','→',{'aria-hidden':'true'}));append(world,top('selector'),label,hero,grid,noteCard);main.append(world);}
- function renderStory(main,id){if(!state||state.id!==id)state=states.get(id)||model.start(id);states.set(id,state);const c=model.content(state),r=c.route;main.dataset.novaRoute=id;main.dataset.novaPhase=state.phase;heading(main,r.titulo,sceneTitle(r.escenario));const panel=el('section',null,{class:'nova-dialogue','aria-label':'Recorrido de Nova'});
+ function renderStory(main,id){if(!state||state.id!==id)state=states.get(id)||model.start(id);states.set(id,state);const c=model.content(state),r=c.route;main.dataset.novaRoute=id;main.dataset.novaPhase=state.phase;heading(main,r.titulo,sceneTitle(r.escenario));const panel=el('section',null,{class:'nova-dialogue','aria-label':'Recorrido de Nova'});if(state.phase==='entry')panel.append(journeyOrientation());
   let text;if(state.phase==='entry')text=r.entrada;if(state.phase==='q1')text=r.primera_pregunta;if(state.phase==='a1')text=c.first.respuesta;if(state.phase==='q2')text=c.first.segunda_pregunta;if(state.phase==='a2')text=c.second.respuesta;if(state.phase==='close')text=r.cierre;
   panel.append(el(state.phase.startsWith('q')?'h2':'p',text,{class:'nova-words',id:'nova-words'}));
   if(state.phase==='q1'||state.phase==='q2'){const options=state.phase==='q1'?r.primeras_opciones:c.first.segundas_opciones;const choices=el('div',null,{class:'nova-choices'});options.forEach((o,i)=>choices.append(button(o.texto,()=>{if(!allowDraftChange())return;state=model.choose(state,i);states.set(id,state);rerender();},{class:'nova-choice','data-choice':i})));panel.append(choices);}
@@ -71,9 +73,9 @@ export function createNova({navigate,announce,rerender}){
  if(state.phase==='q1'||state.phase==='q2')panel.append(button('Ninguna encaja: volver al lugar',()=>navigate('nova','escena/'+r.escenario),{class:'choice-skip secondary','data-choice-skip':'true'}));
   if(['entry','a1','a2'].includes(state.phase))panel.append(button(state.phase==='entry'?'Comenzar':state.phase==='a2'?'Ver el cierre':'Continuar',()=>{if(!allowDraftChange())return;state=model.advance(state);states.set(id,state);rerender();},{id:'nova-continue'}));
   const optional=model.contextualAction(state);if(optional)panel.append(link(optional.label,optional.target,{class:'button secondary nova-contextual'}));
-  if(state.phase==='close')panel.append(group(link('Explorar otro lugar','selector',{class:'button secondary'})));
+  if(state.phase==='close')panel.append(journeyEnding({world:'nova',scene:r.escenario,onNote:()=>{pendingDraft='';navigate('nova','notas/'+r.escenario);}}));
   if(['a2','close'].includes(state.phase))panel.append(nextStep({world:'nova',route:r.id,title:r.titulo,scene:r.escenario,first:c.first.texto,second:c.second.texto,navigate,onNote:text=>{pendingDraft=text;navigate('nova','notas/'+r.escenario);}}));
-  const previous=button('← Volver',()=>{if(!allowDraftChange())return;if(state.phase==='entry'){navigate('nova','escena/'+r.escenario);return;}state=model.back(state);states.set(id,state);rerender();},{class:'secondary',id:'nova-back'});previous.disabled=false;append(main,panel,group(previous,link('Volver al lugar','escena/'+r.escenario,{class:'button secondary'}),baseLink('Aquí contigo','apoyo'),baseLink('Inicio','inicio')));}
+  const previous=button(state.phase==='entry'?'Volver al lugar':'← Paso anterior',()=>{if(!allowDraftChange())return;if(state.phase==='entry'){navigate('nova','escena/'+r.escenario);return;}state=model.back(state);states.set(id,state);rerender();},{class:'secondary',id:'nova-back'});previous.disabled=false;append(main,panel,group(previous,...(state.phase==='entry'||state.phase==='close'?[]:[link('Volver al lugar','escena/'+r.escenario,{class:'button secondary'})])));}
  function renderNotes(main,id){main.append(top(noteReturn));const draft=pendingDraft;pendingDraft='';renderWorldNotes({main,world:'nova',name:'Nova',scene:model.SCENES.includes(id)?id:model.SCENES[0],scenes:model.SCENES.map(id=>({id,title:sceneTitle(id)})),store:notes,navigate,announce,draft,onDirty:fn=>dirty=fn});}
 
  function render(main,path){generation++;dirty=()=>false;context=path||'portada';main.dataset.nova='true';const [kind,key]=context.split('/');if(kind==='portada'){append(main,top(),cover(true));main.classList.add('nova-cover-view');return;}main.classList.remove('nova-cover-view');if(kind==='selector'){renderSelector(main);return;}if(kind==='escena'&&model.SCENES.includes(key)){renderScene(main,key);return;}if(kind==='ruta'&&model.ROUTES.has(key)){renderStory(main,key);return;}if(kind==='notas'){renderNotes(main,key);return;}heading(main,'Este lugar de Nova no está disponible',null);main.append(link('Volver a Nova','portada',{class:'button'}));}

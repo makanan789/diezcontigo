@@ -1,4 +1,4 @@
-import {SCENES} from './model.js';
+import {SCENES} from './model.js?v=0.15.4';
 export const DATABASE='diez-nova-notas-v1';export const MAX_LENGTH=2000;
 function checked(text){if(typeof text!=='string'||!text.trim())throw new Error('Escribe algo antes de guardar.');if(text.length>MAX_LENGTH)throw new Error('La nota admite hasta 2000 caracteres. Tu texto sigue en el editor.');return text;}
 function open(){return new Promise((resolve,reject)=>{if(!globalThis.indexedDB){reject(new Error('Este navegador no permite abrir las notas locales. Tu texto sigue en el editor.'));return;}let req;try{req=indexedDB.open(DATABASE,1);}catch{reject(new Error('No se pudo abrir el almacenamiento local. Tu texto sigue en el editor.'));return;}req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('notes'))req.result.createObjectStore('notes',{keyPath:'id'});};req.onerror=()=>reject(new Error('No se pudo abrir el almacenamiento local. Tu texto sigue en el editor.'));req.onblocked=()=>reject(new Error('Cierra otras pestañas de esta versión e inténtalo de nuevo.'));req.onsuccess=()=>{const db=req.result;db.onversionchange=()=>db.close();resolve(db);};});}

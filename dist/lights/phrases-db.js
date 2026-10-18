@@ -18,3 +18,22 @@ async function transaction(mode,action){const db=await open();return new Promise
 export async function readAll(){return(await transaction('readonly',s=>s.getAll())).filter(r=>typeof r.text==='string'&&r.text.length<=MAX_LENGTH).sort((a,b)=>b.createdAt-a.createdAt);}
 export function save(text){const value=text.trim();if(!value||value.length>MAX_LENGTH)throw new Error('Escribe una frase de hasta 500 caracteres.');const id=globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);return transaction('readwrite',s=>s.add({id,text:value,createdAt:Date.now()}));}
 export function remove(id){return transaction('readwrite',s=>s.delete(id));}
+// Keep the existing database and its personal phrases. Check and add atomically,
+// including across two tabs, without replacing a previously saved record.
+export async function saveOriginal(light){
+ const value=light.text.trim();
+ if(!/^\d{2}$/.test(light.id)||!value||value.length>MAX_LENGTH)throw new Error('Esta frase no se ha podido guardar.');
+ const db=await open();
+ return new Promise((resolve,reject)=>{
+  let saved=false;
+  try{
+   const tx=db.transaction(STORE,'readwrite'),store=tx.objectStore(STORE),request=store.getAll();
+   request.onsuccess=()=>{
+    if(request.result.some(r=>r.id==='light:'+light.id||r.text===value))return;
+    store.add({id:'light:'+light.id,text:value,title:light.title,lightId:light.id,createdAt:Date.now()});saved=true;
+   };
+   tx.oncomplete=()=>{db.close();resolve({saved});};
+   tx.onabort=()=>{db.close();reject(new Error('No se ha podido guardar la frase. Vuelve a intentarlo.'));};tx.onerror=()=>{};
+  }catch{db.close();reject(new Error('No se ha podido acceder a tus frases en este navegador.'));}
+ });
+}

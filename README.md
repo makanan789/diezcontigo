@@ -1,88 +1,76 @@
 # DIEZ · Un lugar para volver a ti
 
-Aplicación web de **David Salgado**, preparada para el Hackathon de Vibe Coding E7 de BIG School.
+Aplicación web de David Salgado, preparada para el Hackathon de Vibe Coding E7 de BIG School.
 
-[Abrir la aplicación](https://diezcontigo.makanan-music.chatgpt.site/)
+**Versión pública documentada:** 0.15.6 · 17 de octubre de 2026  
+**Sincronización del repositorio:** 18 de octubre de 2026  
+**Aplicación:** https://diezcontigo.makanan-music.chatgpt.site/  
+**Revisión de Sites:** 16  
+**Commit de la fuente publicada:** `c2eb928fdc02fcbf12cdac4b0d82d9eac8fbe0a8`
 
 ## Qué ofrece
 
-DIEZ reúne relatos interactivos, personajes con voz, escritura, grabación personal y pausas visuales. Está dirigida a personas adultas y permite avanzar o detenerse sin registrarse.
+DIEZ reúne relatos interactivos con Nova, Nexo, Alma y Luz, herramientas para hacer una pausa, escribir y grabar una nota de voz propia. Está dirigida a personas adultas y permite explorar o salir sin completar un itinerario.
 
-- **Nova · Relaciones:** cinco escenarios y 19 recorridos.
-- **Nexo · Trabajo:** cinco escenarios y 20 recorridos.
-- **Alma · Familia:** cinco escenarios y 20 recorridos.
-- **Luz · Vida personal:** cinco escenarios y 20 recorridos, más **Suelta tu voz**.
-- **Respira conmigo:** tres etapas con audio, pausa, repetición y reinicio de la experiencia.
-- **Tu refugio y notas personales:** escritura y guardado local.
-- **Diez pequeñas luces y Caja de las emociones:** lecturas y frases propias guardadas en el navegador.
-- **Aquí contigo:** orientación y acceso a apoyo humano o recursos externos.
+- **Nova · Relaciones**, **Nexo · Trabajo**, **Alma · Familia** y **Luz · Vida personal:** recorridos escritos con elecciones y continuaciones preparadas.
+- **Respira conmigo:** tres etapas con audio y controles de pausa, avance y reinicio; no usa el micrófono.
+- **Suelta tu voz:** grabación iniciada por la persona, reacción visual al nivel de voz y descarga opcional en MP3.
+- **Diez pequeñas luces:** historias que se pueden leer a ritmo propio y frases para guardar en la Caja de las emociones.
+- **Tu refugio y notas personales:** escritura y guardado en el navegador.
+- **Aquí contigo:** orientación y acceso a recursos externos de apoyo.
+- **Copia de notas y frases:** exportación JSON y recuperación local desde Ajustes; las grabaciones se descargan por separado.
 
-DIEZ es acompañamiento general. No diagnostica, no presta atención de emergencia ni ofrece atención humana en directo. No se afirma eficacia clínica demostrada.
+En Inicio, las cuatro fichas de personajes ocupan el área principal y los tres accesos a herramientas se presentan en una columna lateral en escritorio. Tu refugio y Aquí contigo quedan debajo. En tablet y móvil el diseño se reorganiza para mantener el contenido legible.
 
-## Probarla
+La portada conserva su título y subtítulo alineados a la izquierda, sin la etiqueta «Demostración V0.2», y recupera la frase descriptiva. Los orbes mantienen su tamaño uniforme por breakpoint y margen interior en móvil; el halo aparece con la interacción o al desplazarse, no en reposo. La guía «¿Qué es DIEZ?» explica las herramientas y las diez historias. El título de la pestaña de Inicio es «Un lugar para volver a ti».
 
-La versión pública se abre sin cuenta ni contraseña. Para grabar se necesita una conexión segura y permiso del micrófono. Se pueden explorar los demás apartados sin concederlo.
+DIEZ ofrece acompañamiento general. No diagnostica, no presta atención de emergencia ni cuenta con una persona atendiendo en directo. No se afirma eficacia clínica demostrada.
 
-Para la evaluación, utiliza frases y grabaciones ficticias, sin información personal. No es necesario llamar a los servicios externos para demostrar los enlaces.
+## Probar la aplicación
+
+La versión pública se abre sin cuenta ni contraseña. Para grabar se necesita conexión segura y permiso del micrófono. Los demás apartados se pueden explorar sin concederlo. La evaluación debe utilizar textos y grabaciones ficticios, sin información personal.
 
 ## Ejecutar una copia local
 
-El proyecto es estático: HTML, CSS y módulos JavaScript. No necesita instalar paquetes ni configurar claves de API.
-
-Con Python 3 disponible, desde la carpeta del repositorio:
+El proyecto es estático: HTML, CSS, JavaScript y recursos del directorio `dist`. No necesita paquetes ni claves de API.
 
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1 --directory dist
 ```
 
-Abre `http://127.0.0.1:8000/`. No abras `index.html` directamente como archivo: los módulos y ciertas API requieren un servidor. El uso del micrófono depende de la compatibilidad y los permisos del navegador.
+Abre `http://127.0.0.1:8000/`. No abras `index.html` directamente: los módulos y algunas API requieren un servidor. La grabación depende de las funciones y permisos del navegador.
 
 ## Estructura
 
 ```text
-dist/                  Aplicación y recursos publicados
+dist/                  Aplicación y recursos de la versión 0.15.6
   app.js               Navegación y vistas principales
-  nova/ nexo/ alma/ luz/ Contenido, modelos e interfaces de los personajes
-  lights/              Lecturas, baúl y frases locales
-  media/               Imágenes WebP
-  audio/               Tres audios de respiración
+  nova/ nexo/ alma/ luz/ Contenido, modelos e interfaces
+  lights/              Historias, baúl y frases locales
+  media/               Imágenes publicadas y variantes responsivas
+  audio/               Audios de los personajes y herramientas
   sw.js                Caché versionada de recursos estáticos
 docs/                  Arquitectura, privacidad, entrega y procedencia
-records/               Paquete original de la dependencia lamejs
-MANIFEST.sha256        Huellas de los archivos de esta entrega
+records/               Fuente y licencias de lamejs 1.2.1
+MANIFEST.sha256        Huellas SHA-256 de los archivos de esta entrega
 ```
-
-## Escritura con tus palabras
-
-En las preguntas de Nova, Nexo, Alma y Luz, «Quiero expresarlo con mis palabras» abre un campo de hasta 2000 caracteres. Solo se guarda por decisión de la persona, en las notas locales de ese personaje. El texto libre no se interpreta ni selecciona una rama narrativa. Se puede volver a las opciones o consultar las notas.
-
-El inicio y el pie de página enlazan a «¿Qué es DIEZ?». Tu refugio explica la diferencia entre ideas breves y los cuadernos de los personajes.
 
 ## Datos y audio
 
-Las notas y las frases se guardan en IndexedDB del navegador. Los ajustes usan localStorage. No hay cuenta de usuario, sincronización ni copia remota de las notas.
+Las notas y frases se guardan en IndexedDB; los ajustes se guardan en localStorage. No hay cuenta, sincronización ni copia remota de las notas. En Ajustes se puede descargar una copia JSON de ideas, notas y frases e importarla después. El archivo contiene los textos y debe guardarse en privado; las grabaciones se descargan por separado. Suelta tu voz graba solo cuando se pulsa el control; su procesamiento visual y el MP3 se preparan localmente. No se transcriben ni interpretan las palabras.
 
-Suelta tu voz captura temporalmente y convierte la grabación a **MP3 mono, 32 kHz y 64 kb/s**, en el propio dispositivo. La visualización usa la amplitud del micrófono; no reconoce palabras ni interpreta emociones. La descarga es voluntaria y el código no envía el audio a un servidor.
-
-El acceso a la aplicación sí requiere recursos del alojamiento web. No se presenta el almacenamiento local como cifrado o confidencialidad garantizados. Consulta [privacidad y límites](docs/PRIVACIDAD.md).
-
-## Versión y proceso
-
-Este repositorio contiene una copia íntegra de los 162 archivos de `dist` de la versión **0.8.6**, identificada en la publicación del 16 de octubre de 2026. La procedencia y el commit de la fuente se registran en [RELEASE.json](docs/RELEASE.json).
-
-La importación a GitHub se realiza después de la construcción de la aplicación. El historial de este repositorio no se presenta como el historial completo de desarrollo: el proceso de Vibe Coding se documenta en un Google Doc independiente.
-
-Los textos de los personajes están preparados de antemano. Codex se utilizó durante la construcción; DIEZ no consulta un modelo generativo para producir las respuestas de sus recorridos en tiempo de uso.
+El código no incorpora servidor de aplicación, inicio de sesión ni generación de respuestas mediante IA durante el uso. Codex se utilizó durante la construcción. Consulta [privacidad y límites](docs/PRIVACIDAD.md).
 
 ## Documentación del concurso
 
-- [Documento técnico en Google Docs](https://docs.google.com/document/d/1Sd7_2q1nnrWWoOicaX4cgcKnKp_MYEbDzkCoe-4Nm04/edit)
-- [Historial técnico de prompts en Google Docs](https://docs.google.com/document/d/106YUuX_3Fu7leLoYc07gve_xoPJ4BCv3HVjDHP1KzMw/edit)
-- [Estado y pendientes de entrega](docs/ENTREGA_CONCURSO.md)
+- [Documento técnico en Google Docs](https://docs.google.com/document/d/1qq_A_ga-EE0u2kx868mt9oB__UROqHxhHvIuTBoaoGo/edit)
+- [Historial de prompts en Google Docs](https://docs.google.com/document/d/1VDb5_oycVW9fQyUt6phJkW2PVbfdvNx3hxsuANubhNA/edit)
+- [Estado de los entregables](docs/ENTREGA_CONCURSO.md)
+- [Arquitectura](docs/ARQUITECTURA.md)
+- [Recursos y derechos](docs/RECURSOS_Y_DERECHOS.md)
 
-Los documentos se preparan de forma privada hasta verificar los permisos para el jurado.
+El historial de GitHub registra la preparación de esta copia del proyecto; no se presenta como el historial completo de desarrollo. El documento de prompts conserva ese proceso por separado. El repositorio permanece privado hasta que se habilite el acceso requerido por la organización.
 
 ## Recursos de terceros
 
-La conversión a MP3 utiliza **lamejs 1.2.1**, distribuido con sus avisos, licencias y fuente original. Consulta [recursos y derechos](docs/RECURSOS_Y_DERECHOS.md). No se concede en esta entrega una licencia general de código abierto a DIEZ.
-
+La conversión a MP3 utiliza lamejs 1.2.1, con sus avisos y licencias. Consulta [recursos y derechos](docs/RECURSOS_Y_DERECHOS.md). Esta entrega no concede una licencia general de código abierto a DIEZ.

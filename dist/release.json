@@ -1,15 +1,8 @@
 {
-  "id": "diez-guia-escritura-libre-20261016",
-  "version": "0.8.6",
-  "date": "2026-10-16",
+  "id": "diez-browser-title-20261017",
+  "version": "0.15.6",
+  "date": "2026-10-17",
   "scope": [
-    "Pistas de audio sin X y texto breve adaptable",
-    "Escritura libre voluntaria en las preguntas de los cuatro personajes",
-    "Guardado en las bases de notas existentes y protección del borrador",
-    "Guía de Tu refugio y acceso a los cuadernos",
-    "Qué es DIEZ: orientación, funcionamiento y límites"
-  ],
-  "pending": [
-    "Aclaración de Eva sobre cuatro opciones y círculo superior izquierdo"
+    "Pestaña de Inicio: «Un lugar para volver a ti». Se elimina la coletilla obsoleta «V0.2» del título de las pantallas y de la descripción de la página."
   ]
 }
