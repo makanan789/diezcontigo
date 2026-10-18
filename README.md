@@ -65,11 +65,13 @@ El código no incorpora servidor de aplicación, inicio de sesión ni generació
 
 - [Documento técnico en Google Docs](https://docs.google.com/document/d/1qq_A_ga-EE0u2kx868mt9oB__UROqHxhHvIuTBoaoGo/edit)
 - [Historial de prompts en Google Docs](https://docs.google.com/document/d/1VDb5_oycVW9fQyUt6phJkW2PVbfdvNx3hxsuANubhNA/edit)
+- [Carpeta de entrega en Google Drive](https://drive.google.com/drive/folders/17juXZiqdN_yypJcf5dQqyfJwEZVezOjP)
+- [Vídeo demostrativo](https://drive.google.com/file/d/1rN1gQGylptkfvUFcG4NXYD64nZLi4uMQ/view)
 - [Estado de los entregables](docs/ENTREGA_CONCURSO.md)
 - [Arquitectura](docs/ARQUITECTURA.md)
 - [Recursos y derechos](docs/RECURSOS_Y_DERECHOS.md)
 
-El historial de GitHub registra la preparación de esta copia del proyecto; no se presenta como el historial completo de desarrollo. El documento de prompts conserva ese proceso por separado. El repositorio permanece privado hasta que se habilite el acceso requerido por la organización.
+El historial de GitHub registra la preparación de esta copia del proyecto; no se presenta como el historial completo de desarrollo. El documento de prompts conserva ese proceso por separado. El repositorio es público desde el 18 de octubre de 2026; se comprobó su consulta sin iniciar sesión.
 
 ## Recursos de terceros
 
